@@ -32,25 +32,6 @@ var fixation = {
   trial_duration: 500
 };
 
-// // Function to add light gray background
-// var addLightGrayBg = {
-//   type: jsPsychCallFunction,
-//   func: function() {
-//     document.body.classList.add('light-gray-bg');
-//   }
-// };
-
-// // Function to remove light gray background
-// var removeLightGrayBg = {
-//   type: jsPsychCallFunction,
-//   func: function() {
-//     document.body.classList.remove('light-gray-bg');
-//   }
-// };
-
-// Add the function to add the background color right after the task description
-// timeline.push(addLightGrayBg);
-
 // Iterate through each trial and add the blank page and fixation trial before the actual trial
 for (let i = 0; i < trialNumber; i++) {
 
@@ -61,7 +42,6 @@ for (let i = 0; i < trialNumber; i++) {
     choices: "NO_KEYS",
     trial_duration: function() {
       var duration = Math.floor(Math.random() * (1000 - 750 + 1)) + 750;
-      // console.log('Blank page duration:', duration);
       return duration;
     }
   };
@@ -126,11 +106,62 @@ for (let i = 0; i < trialNumber; i++) {
     trial_duration: null // This makes the trial wait indefinitely until 'space' is pressed
   };
 
+  // Part 3: Show the new image after space is pressed
+  var revealImage = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: function() {
+      var trialClass = trialClasses[i];
+      var imgFolder = "";
+
+      if (0 * eachClassTrialNumber <= trialClass && trialClass < 1 * eachClassTrialNumber) {
+        imgFolder = "uniform";
+      } else if (1 * eachClassTrialNumber <= trialClass && trialClass < 2 * eachClassTrialNumber) {
+        imgFolder = "low";
+      } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
+        imgFolder = "high";
+      }
+
+      var randomNumber = Math.floor(Math.random() * 11) + 1;
+
+      return `
+        <div class="trial-container">
+          <h2 class="trial-number">Trial ${i + 1}</h2>
+          <img src="img/${imgFolder}/${randomNumber}.jpg" class="large-image" id="revealed-card">
+          <img src="img/${imgFolder}/back.jpg" class="small-image">
+        </div>
+      `;
+    },
+    choices: "NO_KEYS",
+    trial_duration: 1000,
+    on_finish: function(data) {
+      // Store the random number in data for use in the next trial
+      jsPsych.data.write({ revealed_card: data.stimulus });
+    }
+  };
+
+  // Part 4: Show text after image is revealed
+  var showDecisionText = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: function() {
+      var lastTrialData = jsPsych.data.get().last(1).values()[0];
+      var revealedCardHtml = lastTrialData.revealed_card;
+
+      return `
+        <div class="trial-container">
+          <h2 class="trial-number">Trial ${i + 1}</h2>
+          ${revealedCardHtml}
+          <div class="reveal-text">play (up arrow)<br>hold (down arrow)</div>
+        </div>
+      `;
+    },
+    choices: ['ArrowUp', 'ArrowDown'], // Allow responses using up and down arrows
+    trial_duration: null // Wait indefinitely for a response
+  };
+
   timeline.push(showImages);
   timeline.push(showText);
+  timeline.push(revealImage);
+  timeline.push(showDecisionText);
 }
-
-// Add the function to remove the background color after all trials are done
-// timeline.push(removeLightGrayBg);
 
 jsPsych.run(timeline);
