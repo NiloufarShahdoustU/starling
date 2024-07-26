@@ -1,0 +1,63 @@
+.trial-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.trial-number {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  background-color: white;
+  z-index: 1000;
+}
+
+p {
+  text-align: justify;
+}
+
+.center {
+  text-align: center;
+}
+
+.logo-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fixation_point {
+  display: block;
+  margin: 20px auto;
+}
+
+.light-gray-bg {
+  background-color: lightgray;
+}
+
+.large-image {
+  width: 20%; /* Adjust size as needed */
+}
+
+.small-image {
+  width: 12%; /* Adjust size as needed */
+  position: absolute;
+  top: 150px; /* Adjust this value to move the small image downwards */
+  right: 100px;
+}
+
+
+.reveal-text {
+  position: absolute;
+  bottom: 80px; /* Move the text higher */
+  font-size: 20px;
+  font-weight: bold; /* Make the text bold */
+  text-align: center;
+  width: 100%;
+}
