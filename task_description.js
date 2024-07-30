@@ -1,36 +1,35 @@
 var timeline = [];
 
 var title_screen = {
-  type: jsPsychHtmlButtonResponse,
+  type: jsPsychHtmlKeyboardResponse,
   stimulus: `
     <div class="center">
       <div class="logo-title">
         <img src="img/logo.png" width="20%">
         <h1>Starling Task</h1>
+        <p>press <b>SPACE</b> to start</p>
       </div>
     </div>
   `,
-  choices: ['Start']
+  choices: [' '] // The key name for space is ' '
 };
 timeline.push(title_screen);
 
 var confs = {
-  type: jsPsychSurveyMultiChoice,
-  questions: [
-    {
-      prompt: "Do you confirm that you've been consented?",
-      name: 'DesktopConf',
-      options: ['1: I confirm', '2: I do not confirm'],
-      required: true
-    }
-  ],
-  preamble: `
-    <p><img src="img/logo.png" width="20%"></p>
-    <p><b>Welcome to this experiment and thank you very much for your participation.</b></p>
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <div class="center">
+      <p><img src="img/logo.png" width="20%"></p>
+      <p><b>Welcome to this experiment and thank you very much for your participation.</b></p>
+      <p>Do you confirm that you've been consented?</p>
+      <p>press <b>Y</b> to confirm and continue</p>
+      <p>press <b>N</b> to not confirm</p>
+    </div>
   `,
+  choices: ['y', 'n'],
   on_finish: function(data) {
-    var responses = data.response;
-    if (responses.DesktopConf === '2: I do not confirm') {
+    var response = data.response;
+    if (response === 'n') {
       jsPsych.endExperiment('The experiment has been terminated because you did not consent.');
       setTimeout(() => {
         window.location.reload(); // Reloads the page after showing the message
@@ -41,8 +40,11 @@ var confs = {
 
 timeline.push(confs);
 
+
+
+
 var task_description = {
-  type: jsPsychHtmlButtonResponse,
+  type: jsPsychHtmlKeyboardResponse,
   stimulus: `
     <div class="center">
       <h2>Task description</h2>
@@ -51,9 +53,15 @@ var task_description = {
       <p>Please decide whether you want to <b>PLAY (up arrow)</b> your card first or <b>HOLD (down arrow)</b> your card to play second.</p>
       <p>You win money for every card you play correctly, and lose money for every card you play incorrectly!</p>
     </div>
+    <div class="center" style="margin-top: 20px;">
+      <p style="font-size: 20px; text-align: center;">Press <b>SPACE</b> to start</p>
+    </div>
   `,
-  choices: ['Next']
+  choices: [' ']
 };
+
+
+
 
 timeline.push(task_description);
 
