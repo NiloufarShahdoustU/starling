@@ -7,8 +7,7 @@ if (typeof require !== 'undefined') {
 var jsPsych = initJsPsych({
   experiment_width: 1000,
   on_finish: function() {
-    // we will get back to this link after when we're done.
-    window.location = "file://155.100.91.44/d/Code/Nill/Starling%20Task/repo/starling/demo.html";
+    window.location = "file://155.100.91.44/d/Code/Nill/Starling%20Task/starling/demo.html";
   },
   override_safe_mode: true
 });
@@ -23,6 +22,13 @@ for (let i = 0; i < trialNumber; i++) {
 }
 
 trialClasses = jsPsych.randomization.shuffle(trialClasses);
+console.log(trialClasses);
+
+var TotalRewardAmount = 10;
+const RewardAmount = 0.50; // this is added to subtracted from the total reward in each trial if it's not timeout!
+
+// Global variables to store random numbers and decision
+var lastRandomNumber, lastRandomNumber2, lastDecision, lastTrialType;
 
 // Define the fixation trial
 var fixation = {
@@ -30,6 +36,23 @@ var fixation = {
   stimulus: '<div style="font-size:60px;">+</div>',
   choices: "NO_KEYS",
   trial_duration: 500
+};
+
+// Define the timeout message trial
+var timeoutMessage = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <div class="trial-container">
+      <div class="timeout-message">
+        <div class="center" style="margin-top: 20px;">
+          <p style="font-size: 20px; text-align: center;"><b>Time is up!</b></p>
+          <p style="font-size: 20px; text-align: center;"><b>Please respond faster!</b></p>
+        </div>
+      </div>
+    </div>
+  `,
+  choices: "NO_KEYS",
+  trial_duration: 1000
 };
 
 // Iterate through each trial and add the blank page and fixation trial before the actual trial
@@ -56,6 +79,7 @@ for (let i = 0; i < trialNumber; i++) {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function() {
       var trialClass = trialClasses[i];
+      console.log(trialClass);
       var imgFolder = "";
 
       if (0 * eachClassTrialNumber <= trialClass && trialClass < 1 * eachClassTrialNumber) {
@@ -68,7 +92,6 @@ for (let i = 0; i < trialNumber; i++) {
 
       return `
         <div class="trial-container">
-          <h2 class="trial-number">Trial ${i + 1}</h2>
           <img src="img/${imgFolder}/back.jpg" class="large-image">
           <img src="img/${imgFolder}/back.jpg" class="small-image">
         </div>
@@ -95,10 +118,9 @@ for (let i = 0; i < trialNumber; i++) {
 
       return `
         <div class="trial-container">
-          <h2 class="trial-number">Trial ${i + 1}</h2>
           <img src="img/${imgFolder}/back.jpg" class="large-image">
           <img src="img/${imgFolder}/back.jpg" class="small-image">
-          <div class="reveal-text">press 'space' to reveal your card</div>
+          <div class="reveal-text">press <b>SPACE</b> to reveal your card</div>
         </div>
       `;
     },
@@ -106,13 +128,109 @@ for (let i = 0; i < trialNumber; i++) {
     trial_duration: null // This makes the trial wait indefinitely until 'space' is pressed
   };
 
-  // Part 3: Show the new image after space is pressed
+
+
+  function getSkewedRandom(minVal, maxVal, skew) {
+    var u = Math.random();
+    var skewFactor = Math.abs(skew);
+    var randomSkewed = Math.pow(u, 1 / skewFactor);
+  
+    if (skew > 0) {
+      randomSkewed = 1 - randomSkewed;
+    }
+  
+    var scaledRandom = minVal + (randomSkewed * (maxVal - minVal));
+    var randomValue = Math.round(scaledRandom);
+    randomValue = Math.max(minVal, Math.min(randomValue, maxVal));
+  
+    return randomValue;
+  }
+
+
+
   var revealImage = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function() {
       var trialClass = trialClasses[i];
       var imgFolder = "";
+      var skewness, randomNumber, randomNumber2;
+    
+      const minNum = 1;  // minimum value 1
+      const maxNum = 11; // maximum value 11
+      const skewnessNum = 1.8;
+  
+      if (0 * eachClassTrialNumber <= trialClass && trialClass < 1 * eachClassTrialNumber) {
+        imgFolder = "uniform";
+        randomNumber = Math.floor(Math.random() * 11) + 1; // large card
+        do {
+          randomNumber2 = Math.floor(Math.random() * 11) + 1; // small card
+        } while (randomNumber2 === randomNumber); // ensure they are different
+  
+        console.log("random number1:", randomNumber);
+        console.log("random number2:", randomNumber2);
+        
+      } else if (1 * eachClassTrialNumber <= trialClass && trialClass < 2 * eachClassTrialNumber) {
+        imgFolder = "low";
+        
+        randomNumber = getSkewedRandom(minNum, maxNum, skewnessNum); // positive skewness
+        do {
+          randomNumber2 = getSkewedRandom(minNum, maxNum, skewnessNum); // positive skewness
+        } while (randomNumber2 === randomNumber); // ensure they are different
+        console.log("random number1:", randomNumber);
+        console.log("random number2:", randomNumber2);
+  
+      } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
+        imgFolder = "high";
+        randomNumber = getSkewedRandom(minNum, maxNum, -skewnessNum); // negative skewness
+        do {
+          randomNumber2 = getSkewedRandom(minNum, maxNum, -skewnessNum); // negative skewness
+        } while (randomNumber2 === randomNumber); // ensure they are different
+        console.log("random number1:", randomNumber);
+        console.log("random number2:", randomNumber2);
+      }
+  
+      lastRandomNumber = randomNumber;
+      lastRandomNumber2 = randomNumber2;
+  
+      // Set timeout to replace the back image with the front image after the flip animation
+      setTimeout(function() {
+        var revealedCard = document.getElementById('revealed-card');
+        revealedCard.src = `img/${imgFolder}/${randomNumber}.jpg`;
+        revealedCard.classList.remove('flip');
+        revealedCard.classList.add('flip-reveal');
+      }, 250); // Flip duration is 0.25 second
+  
+      return `
+        <div class="trial-container">
+          <img src="img/${imgFolder}/back.jpg" class="large-image flip" id="revealed-card">
+          <img src="img/${imgFolder}/back.jpg" class="small-image" id="small-card">
+          <div class="reveal-text">play (up arrow)<br>hold (down arrow)</div>
+        </div>
+      `;
+    },
+    choices: ['arrowup', 'arrowdown'], // Allow responses using up and down arrows
+    trial_duration: 3000, // 3000ms wait
+    on_finish: function(data) {
+      if (data.response === null) { // If no response
+        lastTrialType = 'timeout'; // Mark this trial as a timeout
+      } else {
+        // Store the decision response
+        lastDecision = data.response;
+        lastTrialType = 'response';
+      }
+    }
+  };
+  
 
+  
+
+  // Part 4: Show both images based on the decision or timeout
+  var showBothImagesOrTimeout = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: function() {
+      var trialClass = trialClasses[i];
+      var imgFolder = "";
+  
       if (0 * eachClassTrialNumber <= trialClass && trialClass < 1 * eachClassTrialNumber) {
         imgFolder = "uniform";
       } else if (1 * eachClassTrialNumber <= trialClass && trialClass < 2 * eachClassTrialNumber) {
@@ -120,48 +238,101 @@ for (let i = 0; i < trialNumber; i++) {
       } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
         imgFolder = "high";
       }
-
-      var randomNumber = Math.floor(Math.random() * 11) + 1;
-
-      return `
-        <div class="trial-container">
-          <h2 class="trial-number">Trial ${i + 1}</h2>
-          <img src="img/${imgFolder}/${randomNumber}.jpg" class="large-image" id="revealed-card">
-          <img src="img/${imgFolder}/back.jpg" class="small-image">
-        </div>
-      `;
+  
+      var message = '';
+      var messageColor = '';
+      if (lastTrialType === 'response') {
+        if ((lastRandomNumber < lastRandomNumber2 && lastDecision === 'arrowup') || 
+            (lastRandomNumber > lastRandomNumber2 && lastDecision === 'arrowdown')) {
+          message = 'you win!';
+          messageColor = 'green';
+        } else {
+          message = 'you lose!';
+          messageColor = 'red';
+        }
+      }
+  
+      if (lastTrialType === 'response') {
+        return `
+          <div class="trial-container">
+            <div class="message" style="color: ${messageColor}; font-size: 60px; font-weight: bold; position: absolute; top: 200px;">${message}</div>
+            <img src="img/${imgFolder}/${lastRandomNumber}.jpg" class="large-image" id="revealed-card">
+            <img src="img/${imgFolder}/${lastRandomNumber2}.jpg" class="small-image">
+          </div>
+        `;
+      } else {
+        return `
+          <div class="trial-container">
+            <div class="timeout-message">
+              <div class="center" style="margin-top: 20px;">
+                <p style="font-size: 20px; text-align: center;"><b>Time is up!</b></p>
+                <p style="font-size: 20px; text-align: center;"><b>Please respond faster!</b></p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
     },
     choices: "NO_KEYS",
-    trial_duration: 1000,
-    on_finish: function(data) {
-      // Store the random number in data for use in the next trial
-      jsPsych.data.write({ revealed_card: data.stimulus });
-    }
+    trial_duration: 1000
   };
-
-  // Part 4: Show text after image is revealed
-  var showDecisionText = {
+  
+  // Part 5: Show reward feedback
+  var showRewardFeedback = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function() {
-      var lastTrialData = jsPsych.data.get().last(1).values()[0];
-      var revealedCardHtml = lastTrialData.revealed_card;
+      var rewardChange = 0;
+      var rewardChangeText = '';
+      var rewardChangeColor = '';
+      //console.log('showRewardFeedback lastTrialData:', { lastRandomNumber, lastRandomNumber2, lastDecision, lastTrialType }); // Log lastTrialData to verify contents
+
+      if (lastTrialType === 'response') {
+        if ((lastRandomNumber < lastRandomNumber2 && lastDecision === 'arrowup') || 
+            (lastRandomNumber > lastRandomNumber2 && lastDecision === 'arrowdown')) {
+          rewardChange = RewardAmount;
+          rewardChangeText = `+${RewardAmount}`;
+          rewardChangeColor = 'green';
+        } else {
+          rewardChange = -RewardAmount;
+          rewardChangeText = `-${RewardAmount}`;
+          rewardChangeColor = 'red';
+        }
+        TotalRewardAmount += rewardChange;
+      }
+      else {
+        return `
+          <div class="trial-container">
+            <div class="timeout-message">
+              <div class="center" style="margin-top: 20px;">
+                <p style="font-size: 20px; text-align: center;"><b>Time is up!</b></p>
+                <p style="font-size: 20px; text-align: center;"><b>Please respond faster!</b></p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
 
       return `
         <div class="trial-container">
-          <h2 class="trial-number">Trial ${i + 1}</h2>
-          ${revealedCardHtml}
-          <div class="reveal-text">play (up arrow)<br>hold (down arrow)</div>
+          <div class="center" style="font-size: 55px; font-weight: bold; color: black;">Total: $ ${TotalRewardAmount.toFixed(2)}</div>
+                  <div class="center" style="font-size: 55px; font-weight: bold; color: ${rewardChangeColor}; margin-top: 30px;">$ ${rewardChangeText}</div>
+
         </div>
       `;
+
+      
     },
-    choices: ['ArrowUp', 'ArrowDown'], // Allow responses using up and down arrows
-    trial_duration: null // Wait indefinitely for a response
+    choices: "NO_KEYS",
+    trial_duration: 500
   };
 
+  // Add trials to the timeline
   timeline.push(showImages);
   timeline.push(showText);
   timeline.push(revealImage);
-  timeline.push(showDecisionText);
+  timeline.push(showBothImagesOrTimeout);
+  timeline.push(showRewardFeedback);
+
 }
 
 jsPsych.run(timeline);
