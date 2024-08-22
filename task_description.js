@@ -1,5 +1,30 @@
 var timeline = [];
 
+
+var button_choice = {
+  type: jsPsychHtmlButtonResponse,  // Use button response plugin
+  stimulus: `
+    <div class="center">
+      <h2>Select Your Order</h2>
+    </div>
+  `,
+  choices: ['Order 1', 'Order 2'],  // Labels for the buttons
+  on_finish: function(data) {
+    // Save the chosen order in orderNumber variable
+    var choice = data.response;
+    var orderNumber;
+    if (choice === 0) {
+      orderNumber = 1; 
+    } else {
+      orderNumber = 2;  
+    }
+    console.log('Order chosen:', orderNumber);
+    jsPsych.data.addProperties({orderNumber: orderNumber});
+  }
+};
+timeline.push(button_choice);
+
+
 var title_screen = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: `
