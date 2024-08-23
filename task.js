@@ -2,6 +2,7 @@ import { deck_number1_uni, deck_number2_uni, deck_number1_low, deck_number2_low,
 
 export function runTask(jsPsych, trialNumberIterate_input) {
   // Initialize jsPsych here if it's not initialized elsewhere
+  // trialNumberIterate_input is the order of trials. 
   return new Promise((resolve, reject) => {
     jsPsych = initJsPsych({ 
       experiment_width: 1000, 

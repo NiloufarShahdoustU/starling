@@ -39,6 +39,7 @@ function runAllTasks() {
   taskDescription().then((orderNumber) => {
     console.log("Description finished");
     console.log("Starting first task round...");
+    // if order number is 1 this is the flow: uni, low, high, then mixture of all these (total of 270 trials)
     if (orderNumber==1){
       runTask(jsPsych, trialNumber_fixed_low_first).then(() => {
         console.log("First task round completed.");
@@ -47,7 +48,7 @@ function runAllTasks() {
           console.log("Second task round completed.");
         })
       })
-    } else{
+    } else{ // if order number is 2 this is the flow: uni, high, low, then mixture of all these  (total of 270 trials)
       runTask(jsPsych, trialNumber_fixed_high_first).then(() => {
         console.log("First task round completed.");
         console.log("Starting second task round...");
