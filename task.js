@@ -1,5 +1,4 @@
-import { deck_number1_uni, deck_number2_uni, deck_number1_low, deck_number2_low, deck_number1_high, deck_number2_high, NumberOfTrials, ClassNumber, eachClassTrialNumber } from './global_variables.js';
-import { deck_number1_uni_selected, deck_number2_uni_selected, deck_number1_low_selected, deck_number2_low_selected, deck_number1_high_selected, deck_number2_high_selected} from './global_variables.js';
+import { deck_number1_uni, deck_number2_uni, deck_number1_low, deck_number2_low, deck_number1_high, deck_number2_high, NumberOfTrials, eachClassTrialNumber } from './global_variables.js';
 
 export function runTask(jsPsych, trialNumberIterate_input) {
   // Initialize jsPsych here if it's not initialized elsewhere
@@ -12,6 +11,9 @@ export function runTask(jsPsych, trialNumberIterate_input) {
     });
 
     const timeline = [];
+
+
+
 
     function getRandomNumber(minVal, maxVal) {
       return Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
@@ -37,7 +39,13 @@ export function runTask(jsPsych, trialNumberIterate_input) {
   
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
-   
+    var deck_number1_uni_selected = Array(deck_number1_uni.length).fill(0);
+    var deck_number2_uni_selected = Array(deck_number1_uni.length).fill(0);
+    var deck_number1_low_selected = Array(deck_number1_uni.length).fill(0);
+    var deck_number2_low_selected = Array(deck_number1_uni.length).fill(0);
+    var deck_number1_high_selected = Array(deck_number1_uni.length).fill(0);
+    var deck_number2_high_selected = Array(deck_number1_uni.length).fill(0); 
+
   
   // Iterate through each trial and add the blank page and fixation trial before the actual trial
     for (let i = 0; i < NumberOfTrials; i++) {
@@ -143,7 +151,7 @@ export function runTask(jsPsych, trialNumberIterate_input) {
   
           //
           const minNum = 0;  // minimum value 0
-          const maxNum = 44; // maximum value 44
+          const maxNum = 44; // maximum value 44 (the number of elements in each distribution is 45 and we want to get an index of those numbers)
     
       
           if (0 * eachClassTrialNumber <= trialClass && trialClass < 1 * eachClassTrialNumber) {
@@ -154,6 +162,7 @@ export function runTask(jsPsych, trialNumberIterate_input) {
             } while (deck_number1_uni_selected[temp_rand1_index] === 1);
             randomNumber1 = deck_number1_uni[temp_rand1_index]; // large card
             deck_number1_uni_selected[temp_rand1_index] = 1; // chosen flag =1;
+            // console.log({deck_number1_uni_selected});
 
 
           var temp_rand2_index;
@@ -168,6 +177,7 @@ export function runTask(jsPsych, trialNumberIterate_input) {
                   deck_number2_uni_selected[temp_rand2_index] = 1; // mark the element as selected
               }
           } while (randomNumber2 === randomNumber1); // ensure they are different
+          // console.log({deck_number2_uni_selected});
 
       
             console.log("random number1:", randomNumber1);
@@ -182,6 +192,7 @@ export function runTask(jsPsych, trialNumberIterate_input) {
             } while (deck_number1_low_selected[temp_rand1_index] === 1);
             randomNumber1 = deck_number1_low[temp_rand1_index]; // large card
             deck_number1_low_selected[temp_rand1_index] = 1; // chosen flag =1;
+            // console.log({deck_number1_low_selected});
 
 
           var temp_rand2_index;
@@ -196,6 +207,7 @@ export function runTask(jsPsych, trialNumberIterate_input) {
                 deck_number2_low_selected[temp_rand2_index] = 1; // mark the element as selected
               }
           } while (randomNumber2 === randomNumber1); // ensure they are different
+          // console.log({deck_number2_low_selected});
   
             console.log("random number1:", randomNumber1);
             console.log("random number2:", randomNumber2);
@@ -208,7 +220,7 @@ export function runTask(jsPsych, trialNumberIterate_input) {
             } while (deck_number1_high_selected[temp_rand1_index] === 1);
             randomNumber1 = deck_number1_high[temp_rand1_index]; // large card
             deck_number1_high_selected[temp_rand1_index] = 1; // chosen flag =1;
-
+            // console.log({deck_number1_high_selected});
 
           var temp_rand2_index;
           do {
@@ -222,6 +234,7 @@ export function runTask(jsPsych, trialNumberIterate_input) {
                 deck_number2_high_selected[temp_rand2_index] = 1; // mark the element as selected
               }
           } while (randomNumber2 === randomNumber1); // ensure they are different
+          // console.log({deck_number2_high_selected});
 
   
             console.log("random number1:", randomNumber1);

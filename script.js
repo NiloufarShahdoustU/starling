@@ -35,10 +35,8 @@ trialNumber_mixed = jsPsych.randomization.shuffle(trialNumber_mixed);
 
 function runAllTasks() {
 
-
   console.log("Starting description");
   taskDescription().then((orderNumber) => {
-    console.log({orderNumber})
     console.log("Description finished");
     console.log("Starting first task round...");
     if (orderNumber==1){
