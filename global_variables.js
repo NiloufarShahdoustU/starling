@@ -1,5 +1,5 @@
 // global_variables.js
-export const NumberOfTrials = 9;
+export const NumberOfTrials =9;
 export const ClassNumber = 3;
 export const eachClassTrialNumber = NumberOfTrials / ClassNumber;
 
@@ -15,4 +15,4 @@ export const deck_number2_uni_selected = Array(deck_number1_uni.length).fill(0);
 export const deck_number1_low_selected = Array(deck_number1_uni.length).fill(0);
 export const deck_number2_low_selected = Array(deck_number1_uni.length).fill(0);
 export const deck_number1_high_selected = Array(deck_number1_uni.length).fill(0);
-export const deck_number2_high_selected = Array(deck_number1_uni.length).fill(0);
+export const deck_number2_high_selected = Array(deck_number1_uni.length).fill(0); 
