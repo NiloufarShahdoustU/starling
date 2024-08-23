@@ -50,6 +50,7 @@ export function runTask(jsPsych, trialNumberIterate_input) {
   
   // Iterate through each trial and add the blank page and fixation trial before the actual trial
     for (let i = 0; i < NumberOfTrials; i++) {
+      
 
           // Check if i is a multiple of 3
     if (i % eachClassTrialNumber === 0 && i !== 0) { // Skip adding rest for the first trial (i=0)
