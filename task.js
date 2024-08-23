@@ -42,10 +42,8 @@ export function runTask(jsPsych, trialNumberIterate_input) {
   // Iterate through each trial and add the blank page and fixation trial before the actual trial
     for (let i = 0; i < NumberOfTrials; i++) {
 
-      console.log(deck_number2_high[44]);
-
           // Check if i is a multiple of 3
-    if (i % (3-1) === 0 && i !== 0) { // Skip adding rest for the first trial (i=0)
+    if (i % eachClassTrialNumber === 0 && i !== 0) { // Skip adding rest for the first trial (i=0)
       var restScreen = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: '<div style="font-size: 30px;">You can have some rest! <br>press <b>C</b> to continue.</div>',
@@ -150,18 +148,27 @@ export function runTask(jsPsych, trialNumberIterate_input) {
       
           if (0 * eachClassTrialNumber <= trialClass && trialClass < 1 * eachClassTrialNumber) {
             imgFolder = "uniform";
-            var temp_rand1_index = getRandomNumber(minNum,maxNum);
-            console.log({temp_rand1_index});
-            randomNumber1 = deck_number1_uni[temp_rand1_index]; // large card
-            deck_number1_uni.splice(temp_rand1_index, 1); // delete element from the deck
+            var temp_rand1_index;;
             do {
-              var temp_rand2_index = getRandomNumber(minNum, maxNum);
-              console.log({temp_rand2_index});
+              temp_rand1_index = getRandomNumber(minNum, maxNum);
+            } while (deck_number1_uni_selected[temp_rand1_index] === 1);
+            randomNumber1 = deck_number1_uni[temp_rand1_index]; // large card
+            deck_number1_uni_selected[temp_rand1_index] = 1; // chosen flag =1;
+
+
+          var temp_rand2_index;
+          do {
+              do {
+                  temp_rand2_index = getRandomNumber(minNum, maxNum);
+              } while (deck_number2_uni_selected[temp_rand2_index] === 1); // Check if the index is already selected
+              
               randomNumber2 = deck_number2_uni[temp_rand2_index]; // small card
+              
               if (randomNumber1 !== randomNumber2) {
-                deck_number2_uni.splice(temp_rand2_index, 1);
+                  deck_number2_uni_selected[temp_rand2_index] = 1; // mark the element as selected
               }
           } while (randomNumber2 === randomNumber1); // ensure they are different
+
       
             console.log("random number1:", randomNumber1);
             console.log("random number2:", randomNumber2);
@@ -169,17 +176,24 @@ export function runTask(jsPsych, trialNumberIterate_input) {
           } else if (1 * eachClassTrialNumber <= trialClass && trialClass < 2 * eachClassTrialNumber) {
             imgFolder = "low";
             
-            temp_rand1_index = getRandomNumber(minNum,maxNum);
-            console.log({temp_rand1_index});
-            randomNumber1 = deck_number1_low[temp_rand1_index]; // large card
-            deck_number1_low.splice(temp_rand1_index, 1); // delete element from the deck
-  
+            var temp_rand1_index;;
             do {
-              temp_rand2_index = getRandomNumber(minNum, maxNum);
-              console.log({temp_rand2_index});
+              temp_rand1_index = getRandomNumber(minNum, maxNum);
+            } while (deck_number1_low_selected[temp_rand1_index] === 1);
+            randomNumber1 = deck_number1_low[temp_rand1_index]; // large card
+            deck_number1_low_selected[temp_rand1_index] = 1; // chosen flag =1;
+
+
+          var temp_rand2_index;
+          do {
+              do {
+                  temp_rand2_index = getRandomNumber(minNum, maxNum);
+              } while (deck_number2_low_selected[temp_rand2_index] === 1); // Check if the index is already selected
+              
               randomNumber2 = deck_number2_low[temp_rand2_index]; // small card
+              
               if (randomNumber1 !== randomNumber2) {
-                deck_number2_low.splice(temp_rand2_index, 1);
+                deck_number2_low_selected[temp_rand2_index] = 1; // mark the element as selected
               }
           } while (randomNumber2 === randomNumber1); // ensure they are different
   
@@ -188,19 +202,27 @@ export function runTask(jsPsych, trialNumberIterate_input) {
       
           } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
             imgFolder = "high";
-            temp_rand1_index = getRandomNumber(minNum,maxNum);
-            console.log({temp_rand1_index});
-            randomNumber1 = deck_number1_high[temp_rand1_index]; // large card
-            deck_number1_high.splice(temp_rand1_index, 1); // delete element from the deck
-  
+            var temp_rand1_index;;
             do {
-              temp_rand2_index = getRandomNumber(minNum, maxNum);
-              console.log({temp_rand2_index});
+              temp_rand1_index = getRandomNumber(minNum, maxNum);
+            } while (deck_number1_high_selected[temp_rand1_index] === 1);
+            randomNumber1 = deck_number1_high[temp_rand1_index]; // large card
+            deck_number1_high_selected[temp_rand1_index] = 1; // chosen flag =1;
+
+
+          var temp_rand2_index;
+          do {
+              do {
+                  temp_rand2_index = getRandomNumber(minNum, maxNum);
+              } while (deck_number2_high_selected[temp_rand2_index] === 1); // Check if the index is already selected
+              
               randomNumber2 = deck_number2_high[temp_rand2_index]; // small card
+              
               if (randomNumber1 !== randomNumber2) {
-                deck_number2_high.splice(temp_rand2_index, 1);
+                deck_number2_high_selected[temp_rand2_index] = 1; // mark the element as selected
               }
           } while (randomNumber2 === randomNumber1); // ensure they are different
+
   
             console.log("random number1:", randomNumber1);
             console.log("random number2:", randomNumber2);
