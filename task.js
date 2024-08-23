@@ -1,6 +1,6 @@
-// import jsPsychHtmlKeyboardResponse from './jspsych/dist/plugin-html-keyboard-response.js';
+import { deck_number1_uni, deck_number2_uni, deck_number1_low, deck_number2_low, deck_number1_high, deck_number2_high, NumberOfTrials, ClassNumber, eachClassTrialNumber } from './global_variables.js';
 
-export function runTaskRound1(jsPsych, trialNumberIterate_input) {
+export function runTask(jsPsych, trialNumberIterate_input) {
   // Initialize jsPsych here if it's not initialized elsewhere
   return new Promise((resolve, reject) => {
     jsPsych = initJsPsych({ 
@@ -11,10 +11,7 @@ export function runTaskRound1(jsPsych, trialNumberIterate_input) {
     });
 
     const timeline = [];
-    const NumberOfTrials = 9;
-    const ClassNumber = 3;
-    const eachClassTrialNumber = NumberOfTrials / ClassNumber;
-    
+
 
     function getRandomNumber(minVal, maxVal) {
       return Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
@@ -27,12 +24,6 @@ export function runTaskRound1(jsPsych, trialNumberIterate_input) {
     const RewardAmount = 0.50;
 
     // Deck initialization
-    const deck_number1_uni = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9];
-    const deck_number2_uni = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9];
-    const deck_number1_low = [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 9];
-    const deck_number2_low = [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 8, 9];
-    const deck_number1_high = [9, 9, 9, 9, 9, 9, 9, 9, 9, 8, 8, 8, 8, 8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1];
-    const deck_number2_high = [9, 9, 9, 9, 9, 9, 9, 9, 9, 8, 8, 8, 8, 8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1];
 
     var trialNumberIterate =trialNumberIterate_input;
     console.log(trialNumberIterate);
