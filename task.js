@@ -1,4 +1,5 @@
 import { deck_number1_uni, deck_number2_uni, deck_number1_low, deck_number2_low, deck_number1_high, deck_number2_high, NumberOfTrials, ClassNumber, eachClassTrialNumber } from './global_variables.js';
+import { deck_number1_uni_selected, deck_number2_uni_selected, deck_number1_low_selected, deck_number2_low_selected, deck_number1_high_selected, deck_number2_high_selected} from './global_variables.js';
 
 export function runTask(jsPsych, trialNumberIterate_input) {
   // Initialize jsPsych here if it's not initialized elsewhere
@@ -11,7 +12,6 @@ export function runTask(jsPsych, trialNumberIterate_input) {
     });
 
     const timeline = [];
-
 
     function getRandomNumber(minVal, maxVal) {
       return Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
@@ -41,6 +41,19 @@ export function runTask(jsPsych, trialNumberIterate_input) {
   
   // Iterate through each trial and add the blank page and fixation trial before the actual trial
     for (let i = 0; i < NumberOfTrials; i++) {
+
+      console.log(deck_number2_high[44]);
+
+          // Check if i is a multiple of 3
+    if (i % (3-1) === 0 && i !== 0) { // Skip adding rest for the first trial (i=0)
+      var restScreen = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: '<div style="font-size: 30px;">You can have some rest! <br>press <b>C</b> to continue.</div>',
+        choices: ['c'], // Space key to continue
+        trial_duration: null // Wait indefinitely for the space key
+      };
+      timeline.push(restScreen);
+    }
   
       // Add a blank page with a random duration between 750 and 1000 ms
       var blankPage = {
@@ -138,10 +151,12 @@ export function runTask(jsPsych, trialNumberIterate_input) {
           if (0 * eachClassTrialNumber <= trialClass && trialClass < 1 * eachClassTrialNumber) {
             imgFolder = "uniform";
             var temp_rand1_index = getRandomNumber(minNum,maxNum);
+            console.log({temp_rand1_index});
             randomNumber1 = deck_number1_uni[temp_rand1_index]; // large card
             deck_number1_uni.splice(temp_rand1_index, 1); // delete element from the deck
             do {
               var temp_rand2_index = getRandomNumber(minNum, maxNum);
+              console.log({temp_rand2_index});
               randomNumber2 = deck_number2_uni[temp_rand2_index]; // small card
               if (randomNumber1 !== randomNumber2) {
                 deck_number2_uni.splice(temp_rand2_index, 1);
@@ -155,11 +170,13 @@ export function runTask(jsPsych, trialNumberIterate_input) {
             imgFolder = "low";
             
             temp_rand1_index = getRandomNumber(minNum,maxNum);
+            console.log({temp_rand1_index});
             randomNumber1 = deck_number1_low[temp_rand1_index]; // large card
             deck_number1_low.splice(temp_rand1_index, 1); // delete element from the deck
   
             do {
               temp_rand2_index = getRandomNumber(minNum, maxNum);
+              console.log({temp_rand2_index});
               randomNumber2 = deck_number2_low[temp_rand2_index]; // small card
               if (randomNumber1 !== randomNumber2) {
                 deck_number2_low.splice(temp_rand2_index, 1);
@@ -172,11 +189,13 @@ export function runTask(jsPsych, trialNumberIterate_input) {
           } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
             imgFolder = "high";
             temp_rand1_index = getRandomNumber(minNum,maxNum);
+            console.log({temp_rand1_index});
             randomNumber1 = deck_number1_high[temp_rand1_index]; // large card
             deck_number1_high.splice(temp_rand1_index, 1); // delete element from the deck
   
             do {
               temp_rand2_index = getRandomNumber(minNum, maxNum);
+              console.log({temp_rand2_index});
               randomNumber2 = deck_number2_high[temp_rand2_index]; // small card
               if (randomNumber1 !== randomNumber2) {
                 deck_number2_high.splice(temp_rand2_index, 1);
