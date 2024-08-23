@@ -36,18 +36,24 @@ for (let i = 0; i < NumberOfTrials; i++) {
 trialNumber_mixed = jsPsych.randomization.shuffle(trialNumber_mixed);
 
 
-async function runAllTasks() {
+function runAllTasks() {
   console.log("Starting first task round...");
-  await runTaskRound1(jsPsych, trialNumber_fixed_low_first);
-  console.log("First task round completed.");
+  runTaskRound1(jsPsych, trialNumber_fixed_low_first).then(() => {
+    console.log("First task round completed.");
+    console.log("Starting second task round...");
+    runTaskRound1(jsPsych, trialNumber_fixed_high_first).then(() => {
+      console.log("Second task round completed.");
+    })
+  })
+  // console.log("First task round completed.");
 
-  console.log("Starting second task round...");
-  await runTaskRound1(jsPsych, trialNumber_fixed_high_first);
-  console.log("Second task round completed.");
+  // console.log("Starting second task round...");
+  // await runTaskRound1(jsPsych, trialNumber_fixed_high_first);
+  // console.log("Second task round completed.");
 
-  console.log("Starting third task round...");
-  await runTaskRound1(jsPsych, trialNumber_mixed);
-  console.log("Third task round completed.");
+  // console.log("Starting third task round...");
+  // await runTaskRound1(jsPsych, trialNumber_mixed);
+  // console.log("Third task round completed.");
 }
 
 runAllTasks();
