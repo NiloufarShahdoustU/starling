@@ -1,14 +1,14 @@
 import { deck_number1_uni, deck_number2_uni, deck_number1_low, deck_number2_low, deck_number1_high, deck_number2_high, eachClassTrialNumber } from './global_variables.js';
-import{ InitialRewardAmount, RewardAmount} from './global_variables.js';
+import{ RewardAmount} from './global_variables.js';
 
-export function runTask(jsPsych, trialNumberIterate_input) {
+export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
   // Initialize jsPsych here if it's not initialized elsewhere
   // trialNumberIterate_input is the order of trials. 
   return new Promise((resolve, reject) => {
     jsPsych = initJsPsych({ 
       experiment_width: 1000, 
       on_finish: function () { 
-        resolve(MissedTrial)
+        resolve([MissedTrial, TotalRewardAmount]) // these guys are output
       } 
     });
 
@@ -21,7 +21,7 @@ export function runTask(jsPsych, trialNumberIterate_input) {
     var lastRandomNumber1, lastRandomNumber2, lastDecision, lastTrialType;
 
 
-    var TotalRewardAmount = InitialRewardAmount; //TODO you need to take this as input and also you need to output totalreward
+    var TotalRewardAmount = rewardInput; 
 
     // Deck initialization
 

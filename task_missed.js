@@ -1,14 +1,14 @@
 
-import { eachClassTrialNumber } from './global_variables.js';
+import { RewardAmount, eachClassTrialNumber } from './global_variables.js';
 
-export function runTaskMissed(jsPsych, MissedTrialsInput) {
+export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
   // Initialize jsPsych here if it's not initialized elsewhere
   // trialNumberIterate_input is the order of trials. 
   return new Promise((resolve, reject) => {
     jsPsych = initJsPsych({ 
       experiment_width: 1000, 
       on_finish: function () { 
-        resolve(MissedTrialOutput)
+        resolve([MissedTrialOutput, TotalRewardAmount]) // these are output
       } 
     });
 
@@ -18,8 +18,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput) {
     var lastRandomNumber1, lastRandomNumber2, lastDecision, lastTrialType;
 
 
-    var TotalRewardAmount = 10;
-    const RewardAmount = 0.50;
+    var TotalRewardAmount = rewardInput;
 
     var MissedTrialOutput = {
       TrialNumber: [],
