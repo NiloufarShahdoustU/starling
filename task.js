@@ -1,6 +1,6 @@
 import { deck_number1_uni, deck_number2_uni, deck_number1_low, deck_number2_low, deck_number1_high, deck_number2_high, eachClassTrialNumber } from './global_variables.js';
 
-export function runTask(jsPsych, trialNumberIterate_input, MissedOnes = []) {
+export function runTask(jsPsych, trialNumberIterate_input) {
   // Initialize jsPsych here if it's not initialized elsewhere
   // trialNumberIterate_input is the order of trials. 
   return new Promise((resolve, reject) => {
@@ -25,7 +25,7 @@ export function runTask(jsPsych, trialNumberIterate_input, MissedOnes = []) {
 
     // Deck initialization
 
-    var trialNumberIterate =trialNumberIterate_input;
+    var trialNumberIterate = trialNumberIterate_input;
     console.log(trialNumberIterate);
     // Define the fixation trial
     var fixation = {

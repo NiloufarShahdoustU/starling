@@ -1,4 +1,6 @@
 
+import { eachClassTrialNumber } from './global_variables.js';
+
 export function runTaskMissed(jsPsych, MissedTrialsInput) {
   // Initialize jsPsych here if it's not initialized elsewhere
   // trialNumberIterate_input is the order of trials. 
