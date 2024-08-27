@@ -1,21 +1,17 @@
-import { deck_number1_uni, deck_number2_uni, deck_number1_low, deck_number2_low, deck_number1_high, deck_number2_high, eachClassTrialNumber } from './global_variables.js';
 
-export function runTask(jsPsych, trialNumberIterate_input, MissedOnes = []) {
+export function runTaskMissed(jsPsych, MissedTrialsInput) {
   // Initialize jsPsych here if it's not initialized elsewhere
   // trialNumberIterate_input is the order of trials. 
   return new Promise((resolve, reject) => {
     jsPsych = initJsPsych({ 
       experiment_width: 1000, 
       on_finish: function () { 
-        resolve(MissedTrial)
+        resolve(MissedTrialOutput)
       } 
     });
 
     var timeline = [];
 
-    function getRandomNumber(minVal, maxVal) {
-      return Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
-    }
 
     var lastRandomNumber1, lastRandomNumber2, lastDecision, lastTrialType;
 
@@ -23,9 +19,16 @@ export function runTask(jsPsych, trialNumberIterate_input, MissedOnes = []) {
     var TotalRewardAmount = 10;
     const RewardAmount = 0.50;
 
+    var MissedTrialOutput = {
+      TrialNumber: [],
+      Number1: [],
+      Number2: []
+    };
+    
+
     // Deck initialization
 
-    var trialNumberIterate =trialNumberIterate_input;
+    var trialNumberIterate = MissedTrialsInput.TrialNumber;
     console.log(trialNumberIterate);
     // Define the fixation trial
     var fixation = {
@@ -36,24 +39,10 @@ export function runTask(jsPsych, trialNumberIterate_input, MissedOnes = []) {
     };
   
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
-    var deck_number1_uni_selected = Array(deck_number1_uni.length).fill(0);
-    var deck_number2_uni_selected = Array(deck_number1_uni.length).fill(0);
-    var deck_number1_low_selected = Array(deck_number1_uni.length).fill(0);
-    var deck_number2_low_selected = Array(deck_number1_uni.length).fill(0);
-    var deck_number1_high_selected = Array(deck_number1_uni.length).fill(0);
-    var deck_number2_high_selected = Array(deck_number1_uni.length).fill(0); 
-
-    var MissedTrial = {
-      TrialNumber: [],
-      Number1: [],
-      Number2: []
-    };
-    
 
   
   // Iterate through each trial and add the blank page and fixation trial before the actual trial
-    for (let i = 0; i < eachClassTrialNumber; i++) {
+    for (let i = 0; i < trialNumberIterate.length; i++) {
       
       // Add a blank page with a random duration between 750 and 1000 ms
       var blankPage = {
@@ -146,87 +135,22 @@ export function runTask(jsPsych, trialNumberIterate_input, MissedOnes = []) {
       
           if (0 * eachClassTrialNumber <= trialClass && trialClass < 1 * eachClassTrialNumber) {
             imgFolder = "uniform";
-            var temp_rand1_index;;
-            do {
-              temp_rand1_index = getRandomNumber(minNum, maxNum);
-            } while (deck_number1_uni_selected[temp_rand1_index] === 1);
-            randomNumber1 = deck_number1_uni[temp_rand1_index]; // large card
-            deck_number1_uni_selected[temp_rand1_index] = 1; // chosen flag =1;
-            // console.log({deck_number1_uni_selected});
-
-
-          var temp_rand2_index;
-          do {
-              do {
-                  temp_rand2_index = getRandomNumber(minNum, maxNum);
-              } while (deck_number2_uni_selected[temp_rand2_index] === 1); // Check if the index is already selected
-              
-              randomNumber2 = deck_number2_uni[temp_rand2_index]; // small card
-              
-              if (randomNumber1 !== randomNumber2) {
-                  deck_number2_uni_selected[temp_rand2_index] = 1; // mark the element as selected
-              }
-          } while (randomNumber2 === randomNumber1); // ensure they are different
-          // console.log({deck_number2_uni_selected});
-
-      
+            randomNumber1 = MissedTrialsInput.Number1[i]; // large card
+            randomNumber2 =  MissedTrialsInput.Number2[i]; // small card
             console.log("random number1:", randomNumber1);
             console.log("random number2:", randomNumber2);
             
           } else if (1 * eachClassTrialNumber <= trialClass && trialClass < 2 * eachClassTrialNumber) {
             imgFolder = "low";
-            
-            var temp_rand1_index;;
-            do {
-              temp_rand1_index = getRandomNumber(minNum, maxNum);
-            } while (deck_number1_low_selected[temp_rand1_index] === 1);
-            randomNumber1 = deck_number1_low[temp_rand1_index]; // large card
-            deck_number1_low_selected[temp_rand1_index] = 1; // chosen flag =1;
-            // console.log({deck_number1_low_selected});
-
-
-          var temp_rand2_index;
-          do {
-              do {
-                  temp_rand2_index = getRandomNumber(minNum, maxNum);
-              } while (deck_number2_low_selected[temp_rand2_index] === 1); // Check if the index is already selected
-              
-              randomNumber2 = deck_number2_low[temp_rand2_index]; // small card
-              
-              if (randomNumber1 !== randomNumber2) {
-                deck_number2_low_selected[temp_rand2_index] = 1; // mark the element as selected
-              }
-          } while (randomNumber2 === randomNumber1); // ensure they are different
-          // console.log({deck_number2_low_selected});
-  
+            randomNumber1 = MissedTrialsInput.Number1[i]; // large card
+            randomNumber2 =  MissedTrialsInput.Number2[i]; // small card
             console.log("random number1:", randomNumber1);
             console.log("random number2:", randomNumber2);
       
           } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
             imgFolder = "high";
-            var temp_rand1_index;;
-            do {
-              temp_rand1_index = getRandomNumber(minNum, maxNum);
-            } while (deck_number1_high_selected[temp_rand1_index] === 1);
-            randomNumber1 = deck_number1_high[temp_rand1_index]; // large card
-            deck_number1_high_selected[temp_rand1_index] = 1; // chosen flag =1;
-            // console.log({deck_number1_high_selected});
-
-          var temp_rand2_index;
-          do {
-              do {
-                  temp_rand2_index = getRandomNumber(minNum, maxNum);
-              } while (deck_number2_high_selected[temp_rand2_index] === 1); // Check if the index is already selected
-              
-              randomNumber2 = deck_number2_high[temp_rand2_index]; // small card
-              
-              if (randomNumber1 !== randomNumber2) {
-                deck_number2_high_selected[temp_rand2_index] = 1; // mark the element as selected
-              }
-          } while (randomNumber2 === randomNumber1); // ensure they are different
-          // console.log({deck_number2_high_selected});
-
-  
+            randomNumber1 = MissedTrialsInput.Number1[i]; // large card
+            randomNumber2 =  MissedTrialsInput.Number2[i]; // small card
             console.log("random number1:", randomNumber1);
             console.log("random number2:", randomNumber2);
           }
@@ -257,10 +181,10 @@ export function runTask(jsPsych, trialNumberIterate_input, MissedOnes = []) {
           if (data.response === null) { // If no response
             lastTrialType = 'timeout'; // Mark this trial as a timeout
     
-            MissedTrial.TrialNumber.push(trialNumberIterate[i]);
-            MissedTrial.Number1.push(lastRandomNumber1);
-            MissedTrial.Number2.push(lastRandomNumber2);
-            console.log("Missed Trial Added:", MissedTrial); // Check here if trials are being added
+            MissedTrialOutput.TrialNumber.push(trialNumberIterate[i]);
+            MissedTrialOutput.Number1.push(lastRandomNumber1);
+            MissedTrialOutput.Number2.push(lastRandomNumber2);
+            console.log("Missed Trial Added:", MissedTrialOutput); // Check here if trials are being added
 
           } else {
             // Store the decision response
@@ -385,18 +309,6 @@ export function runTask(jsPsych, trialNumberIterate_input, MissedOnes = []) {
       timeline.push(showBothImagesOrTimeout);
       timeline.push(showRewardFeedback);
 
-
-      
-      if (i == eachClassTrialNumber -1) {
-          var restScreen = {
-            type: jsPsychHtmlKeyboardResponse,
-            stimulus: '<div style="font-size: 30px;">You can have some rest! <br>press <b>C</b> to continue.</div>',
-            choices: ['c'], 
-            trial_duration: null 
-          };
-          timeline.push(restScreen);
-        }
-  
     } // trial for loop
   
   
