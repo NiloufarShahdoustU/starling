@@ -1,4 +1,5 @@
 import { deck_number1_uni, deck_number2_uni, deck_number1_low, deck_number2_low, deck_number1_high, deck_number2_high, eachClassTrialNumber } from './global_variables.js';
+import{ InitialRewardAmount, RewardAmount} from './global_variables.js';
 
 export function runTask(jsPsych, trialNumberIterate_input) {
   // Initialize jsPsych here if it's not initialized elsewhere
@@ -20,8 +21,7 @@ export function runTask(jsPsych, trialNumberIterate_input) {
     var lastRandomNumber1, lastRandomNumber2, lastDecision, lastTrialType;
 
 
-    var TotalRewardAmount = 10;
-    const RewardAmount = 0.50;
+    var TotalRewardAmount = InitialRewardAmount; //TODO you need to take this as input and also you need to output totalreward
 
     // Deck initialization
 
@@ -54,7 +54,19 @@ export function runTask(jsPsych, trialNumberIterate_input) {
   
   // Iterate through each trial and add the blank page and fixation trial before the actual trial
     for (let i = 0; i < eachClassTrialNumber; i++) {
-      
+
+      // I need to put the rest page before beginning of each task and NOT after the first one
+      if (i == 0 && trialNumberIterate[i] != 0 && trialNumberIterate[i+1] != 1 && trialNumberIterate[i+2] != 2) {  
+        var restScreen = {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: '<div style="font-size: 30px;">You can have some rest! <br>press <b>C</b> to continue.</div>',
+            choices: ['c'], 
+            trial_duration: null 
+        };
+        timeline.push(restScreen);
+    }
+    
+
       // Add a blank page with a random duration between 750 and 1000 ms
       var blankPage = {
         type: jsPsychHtmlKeyboardResponse,
@@ -386,16 +398,6 @@ export function runTask(jsPsych, trialNumberIterate_input) {
       timeline.push(showRewardFeedback);
 
 
-      
-      if (i == eachClassTrialNumber -1) {
-          var restScreen = {
-            type: jsPsychHtmlKeyboardResponse,
-            stimulus: '<div style="font-size: 30px;">You can have some rest! <br>press <b>C</b> to continue.</div>',
-            choices: ['c'], 
-            trial_duration: null 
-          };
-          timeline.push(restScreen);
-        }
   
     } // trial for loop
   

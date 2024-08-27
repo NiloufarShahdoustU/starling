@@ -311,6 +311,9 @@ export function runTaskMissed(jsPsych, MissedTrialsInput) {
       timeline.push(showBothImagesOrTimeout);
       timeline.push(showRewardFeedback);
 
+
+      
+
     } // trial for loop
   
   
