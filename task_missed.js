@@ -171,7 +171,11 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
             <div class="trial-container">
               <img src="img/${imgFolder}/back.jpg" class="large-image flip" id="revealed-card">
               <img src="img/${imgFolder}/back.jpg" class="small-image" id="small-card">
-              <div class="reveal-text">play (up arrow)<br>hold (down arrow)</div>
+              
+              <div class="reveal-text" style="font-weight: bold; font-family: Arial, sans-serif;">
+                my card is higher <span style="color: green; font-size: 24px;">&#8593;</span> arrow<br>
+                my card is lower <span style="color: red; font-size: 24px;">&#8595;</span> arrow
+              </div>
             </div>
           `;
         
@@ -217,8 +221,8 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           }
       
           if (lastTrialType === 'response') {
-            if ((lastRandomNumber1 < lastRandomNumber2 && lastDecision === 'arrowup') || 
-                (lastRandomNumber1 > lastRandomNumber2 && lastDecision === 'arrowdown')) {
+            if ((lastRandomNumber1 > lastRandomNumber2 && lastDecision === 'arrowup') || 
+                (lastRandomNumber1 < lastRandomNumber2 && lastDecision === 'arrowdown')) {
               message = 'you win!';
               messageColor = 'green';
             } else {
@@ -264,8 +268,8 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           //console.log('showRewardFeedback lastTrialData:', { lastRandomNumber1, lastRandomNumber2, lastDecision, lastTrialType }); // Log lastTrialData to verify contents
   
           if (lastTrialType === 'response') {
-            if ((lastRandomNumber1 < lastRandomNumber2 && lastDecision === 'arrowup') || 
-                (lastRandomNumber1 > lastRandomNumber2 && lastDecision === 'arrowdown')) {
+            if ((lastRandomNumber1 > lastRandomNumber2 && lastDecision === 'arrowup') || 
+                (lastRandomNumber1 < lastRandomNumber2 && lastDecision === 'arrowdown')) {
               rewardChange = RewardAmount;
               rewardChangeText = `+${RewardAmount}`;
               rewardChangeColor = 'green';
