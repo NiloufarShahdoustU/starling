@@ -8,7 +8,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
     jsPsych = initJsPsych({ 
       experiment_width: 1000, 
       on_finish: function () { 
-        resolve([MissedTrial, TotalRewardAmount]) // these guys are output
+        resolve([MissedTrial, TotalRewardAmount, trialData]) // these guys are output
       } 
     });
 
@@ -22,6 +22,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
 
 
     var TotalRewardAmount = rewardInput; 
+
 
     // Deck initialization
 
@@ -43,6 +44,21 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
     var deck_number2_low_selected = Array(deck_number1_uni.length).fill(0);
     var deck_number1_high_selected = Array(deck_number1_uni.length).fill(0);
     var deck_number2_high_selected = Array(deck_number1_uni.length).fill(0); 
+
+    var trialData = {
+      trialNumber: [],
+      spaceRT: [],
+      arrowRT: [],
+      outcome: [],
+      distribution: [],
+      totalReward: [],
+      trialType: [],
+      randomNumber1: [],
+      randomNumber2: [],
+      trialRound: [],
+      interTrialInterval: []
+    };
+
 
     var MissedTrial = {
       TrialNumber: [],
@@ -74,6 +90,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
         choices: "NO_KEYS",
         trial_duration: function() {
           var duration = Math.floor(Math.random() * (1000 - 750 + 1)) + 750;
+          trialData.interTrialInterval.push(duration);
           return duration;
         }
       };
@@ -98,6 +115,8 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
             imgFolder = "high";
           }
+
+          trialData.distribution.push(imgFolder);
   
           return `
             <div class="trial-container">
@@ -136,7 +155,12 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           `;
         },
         choices: [' '], // The key name for space is ' '
-        trial_duration: null // This makes the trial wait indefinitely until 'space' is pressed
+        trial_duration: null, // This makes the trial wait indefinitely until 'space' is pressed
+        on_finish: function (data) {
+          trialData.spaceRT.push(data.rt);  // RT when space is pressed
+          trialData.trialNumber.push(i);  // Store trial number
+        }
+
       };
   
   
@@ -245,6 +269,9 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
       
           lastRandomNumber1 = randomNumber1;
           lastRandomNumber2 = randomNumber2;
+
+          trialData.randomNumber1.push(randomNumber1);  // Store random number 1
+          trialData.randomNumber2.push(randomNumber2);  // Store random number 2
       
           setTimeout(function() {
             var revealedCard = document.getElementById('revealed-card');
@@ -278,11 +305,14 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
             MissedTrial.Number1.push(lastRandomNumber1);
             MissedTrial.Number2.push(lastRandomNumber2);
             console.log("Missed Trial Added:", MissedTrial); // Check here if trials are being added
+            trialData.trialType.push('timeout');
 
           } else {
             // Store the decision response
             lastDecision = data.response;
             lastTrialType = 'response';
+            trialData.arrowRT.push(data.rt);  // RT for arrow key
+            trialData.trialType.push('response');
           }
         }
       };
@@ -313,9 +343,11 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
                 (lastRandomNumber1 < lastRandomNumber2 && lastDecision === 'arrowdown')) {
               message = 'you win!';
               messageColor = 'green';
+              trialData.outcome.push('win');
             } else {
               message = 'you lose!';
               messageColor = 'red';
+              trialData.outcome.push('lose');
             }
             return `
               <div class="trial-container">
@@ -380,7 +412,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
               </div>
             `;
           }
-  
+          trialData.totalReward.push(TotalRewardAmount);
           return `
             <div class="trial-container">
               <div class="center" style="font-size: 55px; font-weight: bold; color: black;">Total: $ ${TotalRewardAmount.toFixed(2)}</div>

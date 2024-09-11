@@ -1,4 +1,4 @@
-import { InitialRewardAmount, NumberOfTrials, ClassNumber, eachClassTrialNumber } from './global_variables.js';
+import { InitialRewardAmount, NumberOfTrials, eachClassTrialNumber } from './global_variables.js';
 import { runTask } from './task.js';
 import { runTaskMissed } from './task_missed.js';
 import { taskDescription } from './task_description.js';
