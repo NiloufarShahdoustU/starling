@@ -15,6 +15,8 @@ var datasetNameTrial = {
   }
 };
 
+let taskData = [];
+
 // Initialize jsPsych
 const jsPsych = initJsPsych({
   on_finish: function() {
@@ -38,12 +40,19 @@ const jsPsych = initJsPsych({
 
 // Function to handle missed trials asynchronously
 async function handleMissedTrials(MissedTrials, rewardInput) {
+  let taskData = []; // Initialize taskData outside the loop
   while (MissedTrials.TrialNumber.length > 0) {
     console.log("Now handling missed trials...");
-    [MissedTrials, rewardInput] = await runTaskMissed(jsPsych, MissedTrials, rewardInput);
+    const result = await runTaskMissed(jsPsych, MissedTrials, rewardInput);
+
+    // Ensure result contains all three variables (MissedTrials, rewardInput, taskData)
+    MissedTrials = result[0];
+    rewardInput = result[1];
+    taskData = result[2]; // Capture the taskData from the function
+
     console.log("Missed trials completed.");
   }
-  return rewardInput; // Return the updated reward
+  return { rewardInput, taskData }; // Return both rewardInput and taskData as an object
 }
 
 // Function to run all tasks in sequence
@@ -60,60 +69,81 @@ async function runAllTasks() {
   console.log("Starting first round...");
   let MissedTrials = { TrialNumber: [], Number1: [], Number2: [] };  // Ensure MissedTrials is initialized
   let WholeReward = InitialRewardAmount;
-
+  
   // Predefined trial numbers for different rounds
   const trialNumber_fixed_uni = [...Array(eachClassTrialNumber).keys()];
   const trialNumber_fixed_low_first = [...Array(eachClassTrialNumber).keys()].map(i => i + eachClassTrialNumber);
   const trialNumber_fixed_high_first = [...Array(eachClassTrialNumber).keys()].map(i => i + 2 * eachClassTrialNumber);
 
   const trialNumber_mixed = jsPsych.randomization.shuffle([...Array(NumberOfTrials).keys()]);
+  let result;
 
   if (orderNumber == 1) {
-    [MissedTrials, WholeReward] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
+    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
     console.log("First round completed.");
-    WholeReward = await handleMissedTrials(MissedTrials, WholeReward);  // Update WholeReward
+    console.log("task data:");
+    console.log(taskData);
+    result = await handleMissedTrials(MissedTrials, WholeReward);
+    WholeReward = result.rewardInput;
+    taskData = result.taskData;
 
     console.log("Starting second round...");
-    [MissedTrials, WholeReward] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
+    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
     console.log("Second round completed.");
-    WholeReward = await handleMissedTrials(MissedTrials, WholeReward);  // Update WholeReward
+    result = await handleMissedTrials(MissedTrials, WholeReward);
+    WholeReward = result.rewardInput;
+    taskData = result.taskData;
 
     console.log("Starting third round...");
-    [MissedTrials, WholeReward] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
+    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
     console.log("Third round completed.");
-    WholeReward = await handleMissedTrials(MissedTrials, WholeReward);  // Update WholeReward
+    result = await handleMissedTrials(MissedTrials, WholeReward);
+    WholeReward = result.rewardInput;
+    taskData = result.taskData;
 
   } else { // If order number is 2, the flow is: uni, high, low, then mixture of all these
-    [MissedTrials, WholeReward] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
+    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
     console.log("First round completed.");
-    WholeReward = await handleMissedTrials(MissedTrials, WholeReward);  // Update WholeReward
+    result = await handleMissedTrials(MissedTrials, WholeReward);
+    WholeReward = result.rewardInput;
+    taskData = result.taskData;
 
     console.log("Starting second round...");
-    [MissedTrials, WholeReward] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
+    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
     console.log("Second round completed.");
-    WholeReward = await handleMissedTrials(MissedTrials, WholeReward);  // Update WholeReward
+    result = await handleMissedTrials(MissedTrials, WholeReward);
+    WholeReward = result.rewardInput;
+    taskData = result.taskData;
 
     console.log("Starting third round...");
-    [MissedTrials, WholeReward] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
+    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
     console.log("Third round completed.");
-    WholeReward = await handleMissedTrials(MissedTrials, WholeReward);  // Update WholeReward
+    result = await handleMissedTrials(MissedTrials, WholeReward);
+    WholeReward = result.rewardInput;
+    taskData = result.taskData;
   }
 
   // Mixed rounds
   console.log("Starting mixed round 1...");
-  [MissedTrials, WholeReward] = await runTask(jsPsych, trialNumber_mixed.slice(0 * eachClassTrialNumber, 1 * eachClassTrialNumber), WholeReward);
+  [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(0 * eachClassTrialNumber, 1 * eachClassTrialNumber), WholeReward);
   console.log("Mixed round 1 completed.");
-  WholeReward = await handleMissedTrials(MissedTrials, WholeReward);  // Update WholeReward
+  result = await handleMissedTrials(MissedTrials, WholeReward);
+  WholeReward = result.rewardInput;
+  taskData = result.taskData;
 
   console.log("Starting mixed round 2...");
-  [MissedTrials, WholeReward] = await runTask(jsPsych, trialNumber_mixed.slice(1 * eachClassTrialNumber, 2 * eachClassTrialNumber), WholeReward);
+  [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(1 * eachClassTrialNumber, 2 * eachClassTrialNumber), WholeReward);
   console.log("Mixed round 2 completed.");
-  WholeReward = await handleMissedTrials(MissedTrials, WholeReward);  // Update WholeReward
+  result = await handleMissedTrials(MissedTrials, WholeReward);
+  WholeReward = result.rewardInput;
+  taskData = result.taskData;
 
   console.log("Starting mixed round 3...");
-  [MissedTrials, WholeReward] = await runTask(jsPsych, trialNumber_mixed.slice(2 * eachClassTrialNumber, 3 * eachClassTrialNumber), WholeReward);
+  [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(2 * eachClassTrialNumber, 3 * eachClassTrialNumber), WholeReward);
   console.log("Mixed round 3 completed.");
-  WholeReward = await handleMissedTrials(MissedTrials, WholeReward);  // Update WholeReward
+  result = await handleMissedTrials(MissedTrials, WholeReward);
+  WholeReward = result.rewardInput;
+  taskData = result.taskData;
 
   console.log("All tasks completed.");
 

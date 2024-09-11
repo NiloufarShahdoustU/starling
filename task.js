@@ -55,7 +55,6 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
       trialType: [],
       randomNumber1: [],
       randomNumber2: [],
-      trialRound: [],
       interTrialInterval: []
     };
 

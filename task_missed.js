@@ -8,7 +8,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
     jsPsych = initJsPsych({ 
       experiment_width: 1000, 
       on_finish: function () { 
-        resolve([MissedTrialOutput, TotalRewardAmount]) // these are output
+        resolve([MissedTrialOutput, TotalRewardAmount, trialData]) // these are output
       } 
     });
 
@@ -27,6 +27,18 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
     };
     
 
+    var trialData = {
+      trialNumber: [],
+      spaceRT: [],
+      arrowRT: [],
+      outcome: [],
+      distribution: [],
+      totalReward: [],
+      trialType: [],
+      randomNumber1: [],
+      randomNumber2: [],
+      interTrialInterval: []
+    };
     // Deck initialization
 
     var trialNumberIterate = MissedTrialsInput.TrialNumber;
@@ -52,6 +64,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
         choices: "NO_KEYS",
         trial_duration: function() {
           var duration = Math.floor(Math.random() * (1000 - 750 + 1)) + 750;
+          trialData.interTrialInterval.push(duration);
           return duration;
         }
       };
@@ -76,6 +89,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
             imgFolder = "high";
           }
+          trialData.distribution.push(imgFolder);
   
           return `
             <div class="trial-container">
@@ -114,7 +128,13 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           `;
         },
         choices: [' '], // The key name for space is ' '
-        trial_duration: null // This makes the trial wait indefinitely until 'space' is pressed
+        trial_duration: null, // This makes the trial wait indefinitely until 'space' is pressed
+        on_finish: function (data) {
+          trialData.spaceRT.push(data.rt);  // RT when space is pressed
+          trialData.trialNumber.push(i);  // Store trial number
+        }
+
+      
       };
   
   
@@ -158,6 +178,8 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
       
           lastRandomNumber1 = randomNumber1;
           lastRandomNumber2 = randomNumber2;
+          trialData.randomNumber1.push(randomNumber1);  // Store random number 1
+          trialData.randomNumber2.push(randomNumber2);  // Store random number 2
       
           setTimeout(function() {
             var revealedCard = document.getElementById('revealed-card');
@@ -190,11 +212,14 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
             MissedTrialOutput.Number1.push(lastRandomNumber1);
             MissedTrialOutput.Number2.push(lastRandomNumber2);
             console.log("Missed Trial Added:", MissedTrialOutput); // Check here if trials are being added
+            trialData.trialType.push('timeout');
 
           } else {
             // Store the decision response
             lastDecision = data.response;
             lastTrialType = 'response';
+            trialData.arrowRT.push(data.rt);  // RT for arrow key
+            trialData.trialType.push('response');
           }
         }
       };
@@ -225,9 +250,11 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
                 (lastRandomNumber1 < lastRandomNumber2 && lastDecision === 'arrowdown')) {
               message = 'you win!';
               messageColor = 'green';
+              trialData.outcome.push('win');
             } else {
               message = 'you lose!';
               messageColor = 'red';
+              trialData.outcome.push('lose');
             }
             return `
               <div class="trial-container">
@@ -292,7 +319,9 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
               </div>
             `;
           }
-  
+
+          trialData.totalReward.push(TotalRewardAmount);
+          
           return `
             <div class="trial-container">
               <div class="center" style="font-size: 55px; font-weight: bold; color: black;">Total: $ ${TotalRewardAmount.toFixed(2)}</div>
