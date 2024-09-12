@@ -270,15 +270,18 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           lastRandomNumber1 = randomNumber1;
           lastRandomNumber2 = randomNumber2;
 
+          // Store the selected imgFolder for the next function
+          jsPsych.data.write({ imgFolder: imgFolder });
+
           trialData.randomNumber1.push(randomNumber1);  // Store random number 1
           trialData.randomNumber2.push(randomNumber2);  // Store random number 2
       
-          setTimeout(function() {
-            var revealedCard = document.getElementById('revealed-card');
-            revealedCard.src = `img/${imgFolder}/${randomNumber1}.jpg`;
-            revealedCard.classList.remove('flip');
-            revealedCard.classList.add('flip-reveal');
-          }, 250); // Flip duration is 0.25 second
+          // setTimeout(function() {
+          //   var revealedCard = document.getElementById('revealed-card');
+          //   revealedCard.src = `img/${imgFolder}/${randomNumber1}.jpg`;
+          //   revealedCard.classList.remove('flip');
+          //   revealedCard.classList.add('flip-reveal');
+          // }, 250); // Flip duration is 0.25 second
           
       
           return `
@@ -297,6 +300,17 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
         },
         choices: ['arrowup', 'arrowdown'], // Allow responses using up and down arrows
         trial_duration: 3000, // 3000ms wait
+      on_load: function() {
+        // Flip the card after the trial starts
+        var lastData = jsPsych.data.getLastTrialData().values()[0];
+        var imgFolder = lastData.imgFolder;
+
+        var revealedCard = document.getElementById('revealed-card');
+        setTimeout(function() {
+          revealedCard.src = `img/${imgFolder}/${lastRandomNumber1}.jpg`; // Update to front image
+          revealedCard.classList.add('flip-reveal');
+        }, 250); // 250ms delay for flip
+      },
         on_finish: function(data) {
           if (data.response === null) { // If no response
             lastTrialType = 'timeout'; // Mark this trial as a timeout
