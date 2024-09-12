@@ -55,7 +55,8 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
       trialType: [],
       randomNumber1: [],
       randomNumber2: [],
-      interTrialInterval: []
+      interTrialInterval: [],
+      choice: []
     };
 
 
@@ -308,6 +309,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
             trialData.arrowRT.push('na');
             trialData.outcome.push('na');
             trialData.totalReward.push('na');
+            trialData.choice.push('na');
             
 
 
@@ -417,6 +419,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
             `;
           }
           trialData.totalReward.push(TotalRewardAmount);
+          trialData.choice.push(lastDecision);
           return `
             <div class="trial-container">
               <div class="center" style="font-size: 55px; font-weight: bold; color: black;">Total: $ ${TotalRewardAmount.toFixed(2)}</div>

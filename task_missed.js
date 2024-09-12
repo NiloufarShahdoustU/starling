@@ -37,7 +37,8 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
       trialType: [],
       randomNumber1: [],
       randomNumber2: [],
-      interTrialInterval: []
+      interTrialInterval: [],
+      choice: []
     };
     // Deck initialization
 
@@ -216,6 +217,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
             trialData.arrowRT.push('na');
             trialData.outcome.push('na');
             trialData.totalReward.push('na');
+            trialData.choice.push('na');
 
           } else {
             // Store the decision response
@@ -324,6 +326,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           }
 
           trialData.totalReward.push(TotalRewardAmount);
+          trialData.choice.push(lastDecision);
           
           return `
             <div class="trial-container">

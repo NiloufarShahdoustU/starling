@@ -57,7 +57,8 @@ async function handleMissedTrials(MissedTrials, rewardInput) {
     spaceRT: [],
     totalReward: [],
     trialNumber: [],
-    trialType: []
+    trialType: [],
+    choice: []
   };
 
   while (MissedTrials.TrialNumber.length > 0) {
@@ -84,6 +85,7 @@ async function handleMissedTrials(MissedTrials, rewardInput) {
     mergedTaskData.totalReward = mergedTaskData.totalReward.concat(taskData.totalReward);
     mergedTaskData.trialNumber = mergedTaskData.trialNumber.concat(taskData.trialNumber);
     mergedTaskData.trialType = mergedTaskData.trialType.concat(taskData.trialType);
+    mergedTaskData.choice = mergedTaskData.choice.concat(taskData.choice);
 
     console.log("Missed trials completed.");
   }
