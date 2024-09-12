@@ -131,7 +131,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
         trial_duration: null, // This makes the trial wait indefinitely until 'space' is pressed
         on_finish: function (data) {
           trialData.spaceRT.push(data.rt);  // RT when space is pressed
-          trialData.trialNumber.push(i);  // Store trial number
+          trialData.trialNumber.push(trialNumberIterate[i]);
         }
 
       

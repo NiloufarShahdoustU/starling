@@ -122,12 +122,8 @@ async function runAllTasks() {
   if (orderNumber == 1) {
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
     console.log("First round completed.");
-    console.log("task data:");
-    console.log(taskData);
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
-    console.log("result.taskData");
-    console.log(result.taskData);
     taskData = result.taskData;
 
     console.log("Starting second round...");
@@ -170,9 +166,15 @@ async function runAllTasks() {
   console.log("Starting mixed round 1...");
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(0 * eachClassTrialNumber, 1 * eachClassTrialNumber), WholeReward);
   console.log("Mixed round 1 completed.");
+  console.log("task data:");
+  console.log(taskData);
   result = await handleMissedTrials(MissedTrials, WholeReward);
+  console.log("result.taskData");
+  console.log(result.taskData);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
+  console.log("sanity check task data:");
+  console.log(taskData);
 
   console.log("Starting mixed round 2...");
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(1 * eachClassTrialNumber, 2 * eachClassTrialNumber), WholeReward);
