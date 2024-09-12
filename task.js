@@ -303,7 +303,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
             MissedTrial.TrialNumber.push(trialNumberIterate[i]);
             MissedTrial.Number1.push(lastRandomNumber1);
             MissedTrial.Number2.push(lastRandomNumber2);
-            console.log("Missed Trial Added:", MissedTrial); // Check here if trials are being added
+            // console.log("Missed Trial Added:", MissedTrial); // Check here if trials are being added
             trialData.trialType.push('timeout');
 
           } else {
