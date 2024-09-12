@@ -42,27 +42,56 @@ const jsPsych = initJsPsych({
 
 
 
+
+
 // Function to handle missed trials asynchronously and merge taskData locally
 async function handleMissedTrials(MissedTrials, rewardInput) {
-  let mergedTaskData = []; // Initialize an empty array to accumulate taskData locally
+  // Initialize a structured object to accumulate data for all missed trials
+  let mergedTaskData = {
+    arrowRT: [],
+    distribution: [],
+    interTrialInterval: [],
+    outcome: [],
+    randomNumber1: [],
+    randomNumber2: [],
+    spaceRT: [],
+    totalReward: [],
+    trialNumber: [],
+    trialType: []
+  };
+
   while (MissedTrials.TrialNumber.length > 0) {
     console.log("Now handling missed trials...");
     
     // Run the missed trials task
     const result = await runTaskMissed(jsPsych, MissedTrials, rewardInput);
 
-    // Update MissedTrials and rewardInput from the result
     MissedTrials = result[0];
     rewardInput = result[1];
+    let taskData = result[2]; // Get taskData from the missed trials
     
-    // Merge the taskData returned by runTaskMissed into mergedTaskData
-    mergedTaskData = mergedTaskData.concat(result[2]); // Append new task data from the missed trials
+    // Assume taskData comes in an object structure like:
+    // taskData = {arrowRT, distribution, interTrialInterval, outcome, randomNumber1, randomNumber2, spaceRT, totalReward, trialNumber, trialType}
+
+    // Merge each field into the corresponding array in mergedTaskData
+    mergedTaskData.arrowRT = mergedTaskData.arrowRT.concat(taskData.arrowRT);
+    mergedTaskData.distribution = mergedTaskData.distribution.concat(taskData.distribution);
+    mergedTaskData.interTrialInterval = mergedTaskData.interTrialInterval.concat(taskData.interTrialInterval);
+    mergedTaskData.outcome = mergedTaskData.outcome.concat(taskData.outcome);
+    mergedTaskData.randomNumber1 = mergedTaskData.randomNumber1.concat(taskData.randomNumber1);
+    mergedTaskData.randomNumber2 = mergedTaskData.randomNumber2.concat(taskData.randomNumber2);
+    mergedTaskData.spaceRT = mergedTaskData.spaceRT.concat(taskData.spaceRT);
+    mergedTaskData.totalReward = mergedTaskData.totalReward.concat(taskData.totalReward);
+    mergedTaskData.trialNumber = mergedTaskData.trialNumber.concat(taskData.trialNumber);
+    mergedTaskData.trialType = mergedTaskData.trialType.concat(taskData.trialType);
 
     console.log("Missed trials completed.");
   }
   
-  return { rewardInput, taskData: mergedTaskData }; // Return the merged taskData
+  return { rewardInput, taskData: mergedTaskData }; // Return the merged taskData as one object
 }
+
+
 
 
 
