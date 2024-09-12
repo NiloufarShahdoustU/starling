@@ -27,7 +27,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
     // Deck initialization
 
     var trialNumberIterate = trialNumberIterate_input;
-    console.log(trialNumberIterate);
+    // console.log(trialNumberIterate);
     // Define the fixation trial
     var fixation = {
       type: jsPsychHtmlKeyboardResponse,
@@ -46,15 +46,15 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
     var deck_number2_high_selected = Array(deck_number1_uni.length).fill(0); 
 
     var trialData = {
-      trialNumber: [],
+      trialIndex: [],
       spaceRT: [],
       arrowRT: [],
       outcome: [],
       distribution: [],
       totalReward: [],
       trialType: [],
-      randomNumber1: [],
-      randomNumber2: [],
+      myCard: [],
+      yourCard: [],
       interTrialInterval: [],
       choice: []
     };
@@ -102,7 +102,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: function() {
           var trialClass = trialNumberIterate[i];
-          console.log(trialClass);
+          // console.log(trialClass);
           var imgFolder = "";
   
           //here based on the trial number we decide which distribution the trial comes from. and that is:
@@ -158,7 +158,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
         trial_duration: null, // This makes the trial wait indefinitely until 'space' is pressed
         on_finish: function (data) {
           trialData.spaceRT.push(data.rt);  // RT when space is pressed
-          trialData.trialNumber.push(trialNumberIterate[i]);  // Store original trial number
+          trialData.trialIndex.push(trialNumberIterate[i]);  // Store original trial number
         }
 
       };
@@ -206,8 +206,8 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           // console.log({deck_number2_uni_selected});
 
       
-            console.log("random number1:", randomNumber1);
-            console.log("random number2:", randomNumber2);
+            // console.log("random number1:", randomNumber1);
+            // console.log("random number2:", randomNumber2);
             
           } else if (1 * eachClassTrialNumber <= trialClass && trialClass < 2 * eachClassTrialNumber) {
             imgFolder = "low";
@@ -235,8 +235,8 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           } while (randomNumber2 === randomNumber1); // ensure they are different
           // console.log({deck_number2_low_selected});
   
-            console.log("random number1:", randomNumber1);
-            console.log("random number2:", randomNumber2);
+            // console.log("random number1:", randomNumber1);
+            // console.log("random number2:", randomNumber2);
       
           } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
             imgFolder = "high";
@@ -263,8 +263,8 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           // console.log({deck_number2_high_selected});
 
   
-            console.log("random number1:", randomNumber1);
-            console.log("random number2:", randomNumber2);
+            // console.log("random number1:", randomNumber1);
+            // console.log("random number2:", randomNumber2);
           }
       
           lastRandomNumber1 = randomNumber1;
@@ -273,8 +273,8 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           // Store the selected imgFolder for the next function
           jsPsych.data.write({ imgFolder: imgFolder });
 
-          trialData.randomNumber1.push(randomNumber1);  // Store random number 1
-          trialData.randomNumber2.push(randomNumber2);  // Store random number 2
+          trialData.myCard.push(randomNumber1);  // Store random number 1
+          trialData.yourCard.push(randomNumber2);  // Store random number 2
       
           // setTimeout(function() {
           //   var revealedCard = document.getElementById('revealed-card');

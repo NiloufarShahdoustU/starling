@@ -22,11 +22,11 @@ let allTaskData = {
   distribution: [],
   interTrialInterval: [],
   outcome: [],
-  randomNumber1: [],
-  randomNumber2: [],
+  myCard: [],
+  yourCard: [],
   spaceRT: [],
   totalReward: [],
-  trialNumber: [],
+  trialIndex: [],
   trialType: [],
   choice: []
 };
@@ -90,17 +90,17 @@ async function handleMissedTrials(MissedTrials, rewardInput) {
     distribution: [],
     interTrialInterval: [],
     outcome: [],
-    randomNumber1: [],
-    randomNumber2: [],
+    myCard: [],
+    yourCard: [],
     spaceRT: [],
     totalReward: [],
-    trialNumber: [],
+    trialIndex: [],
     trialType: [],
     choice: []
   };
 
   while (MissedTrials.TrialNumber.length > 0) {
-    console.log("Now handling missed trials...");
+    // console.log("Now handling missed trials...");
     
     // Run the missed trials task
     const result = await runTaskMissed(jsPsych, MissedTrials, rewardInput);
@@ -110,22 +110,22 @@ async function handleMissedTrials(MissedTrials, rewardInput) {
     let taskData = result[2]; // Get taskData from the missed trials
     
     // Assume taskData comes in an object structure like:
-    // taskData = {arrowRT, distribution, interTrialInterval, outcome, randomNumber1, randomNumber2, spaceRT, totalReward, trialNumber, trialType}
+    // taskData = {arrowRT, distribution, interTrialInterval, outcome, myCard, yourCard, spaceRT, totalReward, trialNumber, trialType}
 
     // Merge each field into the corresponding array in mergedTaskData
     mergedTaskData.arrowRT = mergedTaskData.arrowRT.concat(taskData.arrowRT);
     mergedTaskData.distribution = mergedTaskData.distribution.concat(taskData.distribution);
     mergedTaskData.interTrialInterval = mergedTaskData.interTrialInterval.concat(taskData.interTrialInterval);
     mergedTaskData.outcome = mergedTaskData.outcome.concat(taskData.outcome);
-    mergedTaskData.randomNumber1 = mergedTaskData.randomNumber1.concat(taskData.randomNumber1);
-    mergedTaskData.randomNumber2 = mergedTaskData.randomNumber2.concat(taskData.randomNumber2);
+    mergedTaskData.myCard = mergedTaskData.myCard.concat(taskData.myCard);
+    mergedTaskData.yourCard = mergedTaskData.yourCard.concat(taskData.yourCard);
     mergedTaskData.spaceRT = mergedTaskData.spaceRT.concat(taskData.spaceRT);
     mergedTaskData.totalReward = mergedTaskData.totalReward.concat(taskData.totalReward);
-    mergedTaskData.trialNumber = mergedTaskData.trialNumber.concat(taskData.trialNumber);
+    mergedTaskData.trialIndex = mergedTaskData.trialIndex.concat(taskData.trialIndex);
     mergedTaskData.trialType = mergedTaskData.trialType.concat(taskData.trialType);
     mergedTaskData.choice = mergedTaskData.choice.concat(taskData.choice);
 
-    console.log("Missed trials completed.");
+    // console.log("Missed trials completed.");
   }
   
   return { rewardInput, taskData: mergedTaskData }; // Return the merged taskData as one object
@@ -143,11 +143,11 @@ async function runAllTasks() {
   // Add the dataset name prompt at the beginning of the timeline
   timeline.push(datasetNameTrial);
 
-  console.log("Starting description");
+  // console.log("Starting description");
   const orderNumber = await taskDescription();
-  console.log("Description finished");
+  // console.log("Description finished");
 
-  console.log("Starting first round...");
+  // console.log("Starting first round...");
   let MissedTrials = { TrialNumber: [], Number1: [], Number2: [] };  // Ensure MissedTrials is initialized
   let WholeReward = InitialRewardAmount;
   
@@ -161,7 +161,7 @@ async function runAllTasks() {
 
   if (orderNumber == 1) {
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
-    console.log("First round completed.");
+    // console.log("First round completed.");
     mergeTaskDataIntoAll(taskData, allTaskData);
 
     result = await handleMissedTrials(MissedTrials, WholeReward);
@@ -170,9 +170,9 @@ async function runAllTasks() {
     mergeTaskDataIntoAll(taskData, allTaskData);
 
 
-    console.log("Starting second round...");
+    // console.log("Starting second round...");
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
-    console.log("Second round completed.");
+    // console.log("Second round completed.");
     mergeTaskDataIntoAll(taskData, allTaskData);
 
     result = await handleMissedTrials(MissedTrials, WholeReward);
@@ -181,9 +181,9 @@ async function runAllTasks() {
     mergeTaskDataIntoAll(taskData, allTaskData);
 
 
-    console.log("Starting third round...");
+    // console.log("Starting third round...");
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
-    console.log("Third round completed.");
+    // console.log("Third round completed.");
     mergeTaskDataIntoAll(taskData, allTaskData);
 
     result = await handleMissedTrials(MissedTrials, WholeReward);
@@ -193,7 +193,7 @@ async function runAllTasks() {
 
   } else { // If order number is 2, the flow is: uni, high, low, then mixture of all these
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
-    console.log("First round completed.");
+    // console.log("First round completed.");
     mergeTaskDataIntoAll(taskData, allTaskData);
 
     result = await handleMissedTrials(MissedTrials, WholeReward);
@@ -201,18 +201,18 @@ async function runAllTasks() {
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
 
-    console.log("Starting second round...");
+    // console.log("Starting second round...");
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
-    console.log("Second round completed.");
+    // console.log("Second round completed.");
     mergeTaskDataIntoAll(taskData, allTaskData);
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
 
-    console.log("Starting third round...");
+    // console.log("Starting third round...");
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
-    console.log("Third round completed.");
+    // console.log("Third round completed.");
     mergeTaskDataIntoAll(taskData, allTaskData);
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
@@ -221,34 +221,34 @@ async function runAllTasks() {
   }
 
   // Mixed rounds
-  console.log("Starting mixed round 1...");
+  // console.log("Starting mixed round 1...");
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(0 * eachClassTrialNumber, 1 * eachClassTrialNumber), WholeReward);
-  console.log("Mixed round 1 completed.");
+  // console.log("Mixed round 1 completed.");
   mergeTaskDataIntoAll(taskData, allTaskData);
   result = await handleMissedTrials(MissedTrials, WholeReward);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
   mergeTaskDataIntoAll(taskData, allTaskData);
 
-  console.log("Starting mixed round 2...");
+  // console.log("Starting mixed round 2...");
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(1 * eachClassTrialNumber, 2 * eachClassTrialNumber), WholeReward);
-  console.log("Mixed round 2 completed.");
+  // console.log("Mixed round 2 completed.");
   mergeTaskDataIntoAll(taskData, allTaskData);
   result = await handleMissedTrials(MissedTrials, WholeReward);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
   mergeTaskDataIntoAll(taskData, allTaskData);
 
-  console.log("Starting mixed round 3...");
+  // console.log("Starting mixed round 3...");
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(2 * eachClassTrialNumber, 3 * eachClassTrialNumber), WholeReward);
-  console.log("Mixed round 3 completed.");
+  // console.log("Mixed round 3 completed.");
   mergeTaskDataIntoAll(taskData, allTaskData);
   result = await handleMissedTrials(MissedTrials, WholeReward);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
   mergeTaskDataIntoAll(taskData, allTaskData);
 
-  console.log("All tasks completed.");
+  // console.log("All tasks completed.");
 
   // Run the timeline
   jsPsych.run(timeline);

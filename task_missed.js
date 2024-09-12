@@ -28,22 +28,22 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
     
 
     var trialData = {
-      trialNumber: [],
+      trialIndex: [],
       spaceRT: [],
       arrowRT: [],
       outcome: [],
       distribution: [],
       totalReward: [],
       trialType: [],
-      randomNumber1: [],
-      randomNumber2: [],
+      myCard: [],
+      yourCard: [],
       interTrialInterval: [],
       choice: []
     };
     // Deck initialization
 
     var trialNumberIterate = MissedTrialsInput.TrialNumber;
-    console.log(trialNumberIterate);
+    // console.log(trialNumberIterate);
     // Define the fixation trial
     var fixation = {
       type: jsPsychHtmlKeyboardResponse,
@@ -77,7 +77,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: function() {
           var trialClass = trialNumberIterate[i];
-          console.log(trialClass);
+          // console.log(trialClass);
           var imgFolder = "";
   
           //here based on the trial number we decide which distribution the trial comes from. and that is:
@@ -132,7 +132,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
         trial_duration: null, // This makes the trial wait indefinitely until 'space' is pressed
         on_finish: function (data) {
           trialData.spaceRT.push(data.rt);  // RT when space is pressed
-          trialData.trialNumber.push(trialNumberIterate[i]);
+          trialData.trialIndex.push(trialNumberIterate[i]);
         }
 
       
@@ -159,30 +159,30 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
             imgFolder = "uniform";
             randomNumber1 = MissedTrialsInput.Number1[i]; // large card
             randomNumber2 =  MissedTrialsInput.Number2[i]; // small card
-            console.log("random number1:", randomNumber1);
-            console.log("random number2:", randomNumber2);
+            // console.log("random number1:", randomNumber1);
+            // console.log("random number2:", randomNumber2);
             
           } else if (1 * eachClassTrialNumber <= trialClass && trialClass < 2 * eachClassTrialNumber) {
             imgFolder = "low";
             randomNumber1 = MissedTrialsInput.Number1[i]; // large card
             randomNumber2 =  MissedTrialsInput.Number2[i]; // small card
-            console.log("random number1:", randomNumber1);
-            console.log("random number2:", randomNumber2);
+            // console.log("random number1:", randomNumber1);
+            // console.log("random number2:", randomNumber2);
       
           } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
             imgFolder = "high";
             randomNumber1 = MissedTrialsInput.Number1[i]; // large card
             randomNumber2 =  MissedTrialsInput.Number2[i]; // small card
-            console.log("random number1:", randomNumber1);
-            console.log("random number2:", randomNumber2);
+            // console.log("random number1:", randomNumber1);
+            // console.log("random number2:", randomNumber2);
           }
       
           lastRandomNumber1 = randomNumber1;
           lastRandomNumber2 = randomNumber2;
           jsPsych.data.write({ imgFolder: imgFolder });
 
-          trialData.randomNumber1.push(randomNumber1);  // Store random number 1
-          trialData.randomNumber2.push(randomNumber2);  // Store random number 2
+          trialData.myCard.push(randomNumber1);  // Store random number 1
+          trialData.yourCard.push(randomNumber2);  // Store random number 2
       
           // setTimeout(function() {
           //   var revealedCard = document.getElementById('revealed-card');
