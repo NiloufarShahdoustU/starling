@@ -40,22 +40,32 @@ const jsPsych = initJsPsych({
   }
 });
 
-// Function to handle missed trials asynchronously
+
+
+// Function to handle missed trials asynchronously and merge taskData locally
 async function handleMissedTrials(MissedTrials, rewardInput) {
-  let taskData = []; // Initialize taskData outside the loop
+  let mergedTaskData = []; // Initialize an empty array to accumulate taskData locally
   while (MissedTrials.TrialNumber.length > 0) {
     console.log("Now handling missed trials...");
+    
+    // Run the missed trials task
     const result = await runTaskMissed(jsPsych, MissedTrials, rewardInput);
 
-    // Ensure result contains all three variables (MissedTrials, rewardInput, taskData)
+    // Update MissedTrials and rewardInput from the result
     MissedTrials = result[0];
     rewardInput = result[1];
-    taskData = result[2]; // Capture the taskData from the function
+    
+    // Merge the taskData returned by runTaskMissed into mergedTaskData
+    mergedTaskData = mergedTaskData.concat(result[2]); // Append new task data from the missed trials
 
     console.log("Missed trials completed.");
   }
-  return { rewardInput, taskData }; // Return both rewardInput and taskData as an object
+  
+  return { rewardInput, taskData: mergedTaskData }; // Return the merged taskData
 }
+
+
+
 
 // Function to run all tasks in sequence
 async function runAllTasks() {
