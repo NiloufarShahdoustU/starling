@@ -16,18 +16,34 @@ var datasetNameTrial = {
 };
 
 let taskData = [];
-let allTaskData = [];  // To store merged taskData from all rounds
+
+let allTaskData = {
+  arrowRT: [],
+  distribution: [],
+  interTrialInterval: [],
+  outcome: [],
+  randomNumber1: [],
+  randomNumber2: [],
+  spaceRT: [],
+  totalReward: [],
+  trialNumber: [],
+  trialType: [],
+  choice: []
+};
 
 
-// Initialize jsPsych
+
 const jsPsych = initJsPsych({
   on_finish: function() {
-    var csvData = jsPsych.data.get().csv();
+    const csvData = convertAllTaskDataToCSV(allTaskData);  // Convert merged data to CSV
+    
+    // Get the dataset name from the last recorded trial
     var datasetName = jsPsych.data.get().last(1).values()[0].datasetName;
 
     // Define the filename with your desired path
     var fileName = "data/" + datasetName + ".csv"; // Suggesting "data" directory
 
+    // Create a Blob and save the file
     var blob = new Blob([csvData], { type: 'text/csv' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
@@ -41,6 +57,28 @@ const jsPsych = initJsPsych({
 });
 
 
+
+
+
+function mergeTaskDataIntoAll(taskData, allTaskData) {
+  for (let key in taskData) {
+    if (taskData.hasOwnProperty(key)) {
+      allTaskData[key] = allTaskData[key].concat(taskData[key]);
+    }
+  }
+}
+
+
+function convertAllTaskDataToCSV(allTaskData) {
+  const headers = Object.keys(allTaskData).join(",");
+  const rows = [];
+  const numRows = allTaskData.arrowRT.length;  // Assume all columns are the same length
+  for (let i = 0; i < numRows; i++) {
+    const row = Object.keys(allTaskData).map(key => allTaskData[key][i]).join(",");
+    rows.push(row);
+  }
+  return headers + "\n" + rows.join("\n");
+}
 
 
 
@@ -124,73 +162,91 @@ async function runAllTasks() {
   if (orderNumber == 1) {
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
     console.log("First round completed.");
+    mergeTaskDataIntoAll(taskData, allTaskData);
+
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
+    mergeTaskDataIntoAll(taskData, allTaskData);
+
 
     console.log("Starting second round...");
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
     console.log("Second round completed.");
+    mergeTaskDataIntoAll(taskData, allTaskData);
+
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
+    mergeTaskDataIntoAll(taskData, allTaskData);
+
 
     console.log("Starting third round...");
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
     console.log("Third round completed.");
+    mergeTaskDataIntoAll(taskData, allTaskData);
+
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
+    mergeTaskDataIntoAll(taskData, allTaskData);
 
   } else { // If order number is 2, the flow is: uni, high, low, then mixture of all these
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
     console.log("First round completed.");
+    mergeTaskDataIntoAll(taskData, allTaskData);
+
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
+    mergeTaskDataIntoAll(taskData, allTaskData);
 
     console.log("Starting second round...");
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
     console.log("Second round completed.");
+    mergeTaskDataIntoAll(taskData, allTaskData);
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
+    mergeTaskDataIntoAll(taskData, allTaskData);
 
     console.log("Starting third round...");
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
     console.log("Third round completed.");
+    mergeTaskDataIntoAll(taskData, allTaskData);
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
+    mergeTaskDataIntoAll(taskData, allTaskData);
   }
 
   // Mixed rounds
   console.log("Starting mixed round 1...");
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(0 * eachClassTrialNumber, 1 * eachClassTrialNumber), WholeReward);
   console.log("Mixed round 1 completed.");
-  console.log("task data:");
-  console.log(taskData);
+  mergeTaskDataIntoAll(taskData, allTaskData);
   result = await handleMissedTrials(MissedTrials, WholeReward);
-  console.log("result.taskData");
-  console.log(result.taskData);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
-  console.log("sanity check task data:");
-  console.log(taskData);
+  mergeTaskDataIntoAll(taskData, allTaskData);
 
   console.log("Starting mixed round 2...");
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(1 * eachClassTrialNumber, 2 * eachClassTrialNumber), WholeReward);
   console.log("Mixed round 2 completed.");
+  mergeTaskDataIntoAll(taskData, allTaskData);
   result = await handleMissedTrials(MissedTrials, WholeReward);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
+  mergeTaskDataIntoAll(taskData, allTaskData);
 
   console.log("Starting mixed round 3...");
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(2 * eachClassTrialNumber, 3 * eachClassTrialNumber), WholeReward);
   console.log("Mixed round 3 completed.");
+  mergeTaskDataIntoAll(taskData, allTaskData);
   result = await handleMissedTrials(MissedTrials, WholeReward);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
+  mergeTaskDataIntoAll(taskData, allTaskData);
 
   console.log("All tasks completed.");
 
