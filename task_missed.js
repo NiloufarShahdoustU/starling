@@ -211,7 +211,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
             MissedTrialOutput.TrialNumber.push(trialNumberIterate[i]);
             MissedTrialOutput.Number1.push(lastRandomNumber1);
             MissedTrialOutput.Number2.push(lastRandomNumber2);
-            console.log("Missed Trial Added:", MissedTrialOutput); // Check here if trials are being added
+            // console.log("Missed Trial Added:", MissedTrialOutput); // Check here if trials are being added
             trialData.trialType.push('timeout');
 
           } else {
