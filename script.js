@@ -16,6 +16,8 @@ var datasetNameTrial = {
 };
 
 let taskData = [];
+let allTaskData = [];  // To store merged taskData from all rounds
+
 
 // Initialize jsPsych
 const jsPsych = initJsPsych({
@@ -85,6 +87,8 @@ async function runAllTasks() {
     console.log(taskData);
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
+    console.log("result.taskData");
+    console.log(result.taskData);
     taskData = result.taskData;
 
     console.log("Starting second round...");
