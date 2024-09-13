@@ -302,6 +302,11 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
         trial_duration: 3000, // 3000ms wait
       on_load: function() {
         // Flip the card after the trial starts
+       
+        
+        var flipSound = new Audio('sound/flip.wav'); // Play the flip sound
+        flipSound.play();
+
         var lastData = jsPsych.data.getLastTrialData().values()[0];
         var imgFolder = lastData.imgFolder;
 
@@ -361,10 +366,15 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           if (lastTrialType === 'response') {
             if ((lastRandomNumber1 > lastRandomNumber2 && lastDecision === 'arrowup') || 
                 (lastRandomNumber1 < lastRandomNumber2 && lastDecision === 'arrowdown')) {
+                var winSound = new Audio('sound/win.wav'); // play win sound
+                winSound.play();
               message = 'you win!';
               messageColor = 'green';
               trialData.outcome.push('win');
             } else {
+              var loseSound = new Audio('sound/lose.wav'); // play lose sound
+              loseSound.play();
+              
               message = 'you lose!';
               messageColor = 'red';
               trialData.outcome.push('lose');
