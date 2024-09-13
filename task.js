@@ -309,7 +309,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
         setTimeout(function() {
           revealedCard.src = `img/${imgFolder}/${lastRandomNumber1}.jpg`; // Update to front image
           revealedCard.classList.add('flip-reveal');
-        }, 250); // 250ms delay for flip
+        }, 100); // 250ms delay for flip
       },
         on_finish: function(data) {
           if (data.response === null) { // If no response
