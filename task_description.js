@@ -4,7 +4,9 @@ export function taskDescription() {
     jsPsych = initJsPsych({ 
       experiment_width: 1000, 
       on_finish: function () { 
-        resolve(orderNumber) 
+        // Call the download function after the experiment finishes
+        downloadDemographicData(); 
+        resolve(orderNumber); 
       } 
     }); 
     var timeline = []; 
@@ -118,7 +120,6 @@ var demographic_form = {
 
 timeline.push(demographic_form);
 
-
  
     // Task description screen 
     var task_description = { 
@@ -136,13 +137,9 @@ timeline.push(demographic_form);
     </div> 
   `, 
       choices: [' '], // Waits for the participant to press SPACE to proceed 
-      on_finish: function(data) {
-        downloadDemographicData(); // Automatically download the data
-      }
     }; 
     timeline.push(task_description); 
     jsPsych.run(timeline); 
-
 
 
     
@@ -187,7 +184,6 @@ function downloadDemographicData() {
 }
 
 //////////////////////////////////////////FUNCTIONS/////////////////////////////////////////////////////////
- 
  
   }) 
 }
