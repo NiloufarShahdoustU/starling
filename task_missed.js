@@ -219,7 +219,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           // Show the front of the card after 100ms
           revealedCard.src = `img/${imgFolder}/${lastRandomNumber1}.jpg`;
           revealedCard.classList.add('flip-reveal');
-        }, 100); // 100ms delay for card flip
+        }, 50); // 100ms delay for card flip
     
         // Show the message after 1000ms and enable key responses
         setTimeout(function() {
@@ -264,7 +264,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
 
 
 
-    
+
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   
