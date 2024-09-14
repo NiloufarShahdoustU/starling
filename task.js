@@ -157,7 +157,8 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
         choices: [' '], // The key name for space is ' '
         trial_duration: null, // This makes the trial wait indefinitely until 'space' is pressed
         on_finish: function (data) {
-          trialData.spaceRT.push(data.rt);  // RT when space is pressed
+          trialData.spaceRT.push(data.rt+1000);  // RT when space is pressed (1000 is added to it because
+                                                // because the message is shown 1000ms after card onset)
           trialData.trialIndex.push(trialNumberIterate[i]);  // Store original trial number
         }
 
@@ -289,10 +290,10 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
               <img src="img/${imgFolder}/back.jpg" class="large-image flip" id="revealed-card">
               <img src="img/${imgFolder}/back.jpg" class="small-image" id="small-card">
                             
-              <div class="reveal-text" style="font-weight: bold; font-family: Arial, sans-serif;">
-                my card is higher <span style="color: green; font-size: 24px;">&#8593;</span> arrow<br>
-                my card is lower <span style="color: red; font-size: 24px;">&#8595;</span> arrow
-              </div>
+        <div id="message" style="display: none; font-weight: bold; font-family: Arial, sans-serif; bottom: 2cm; position: absolute;">
+          my card is higher <span style="color: green; font-size: 24px;">&#8593;</span> arrow<br>
+          my card is lower <span style="color: red; font-size: 24px;">&#8595;</span> arrow
+        </div>
 
             </div>
           `;
@@ -300,22 +301,27 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
         },
         choices: ['arrowup', 'arrowdown'], // Allow responses using up and down arrows
         trial_duration: 3000, // 3000ms wait
-      on_load: function() {
-        // Flip the card after the trial starts
-       
-        
-        var flipSound = new Audio('sound/flip.wav'); // Play the flip sound
-        flipSound.play();
+        on_load: function() {
+          var lastData = jsPsych.data.getLastTrialData().values()[0];
+          var imgFolder = lastData.imgFolder;
 
-        var lastData = jsPsych.data.getLastTrialData().values()[0];
-        var imgFolder = lastData.imgFolder;
-
-        var revealedCard = document.getElementById('revealed-card');
-        setTimeout(function() {
-          revealedCard.src = `img/${imgFolder}/${lastRandomNumber1}.jpg`; // Update to front image
-          revealedCard.classList.add('flip-reveal');
-        }, 100); // 250ms delay for flip
-      },
+          // Play the flip sound
+          var flipSound = new Audio('sound/flip.wav');  // Ensure the path to your sound file is correct
+          flipSound.play();
+      
+          // Flip the card after the trial starts
+          var revealedCard = document.getElementById('revealed-card');
+          setTimeout(function() {
+            // Show the front of the card after 100ms
+            revealedCard.src = `img/${imgFolder}/${lastRandomNumber1}.jpg`;
+            revealedCard.classList.add('flip-reveal');
+          }, 100); // 100ms delay for card flip
+      
+          setTimeout(function() {
+            // Show the message after 1000ms
+            document.getElementById('message').style.display = 'block';
+          }, 1000); // 1000ms delay before showing the message
+        },
         on_finish: function(data) {
           if (data.response === null) { // If no response
             lastTrialType = 'timeout'; // Mark this trial as a timeout
@@ -336,7 +342,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
             // Store the decision response
             lastDecision = data.response;
             lastTrialType = 'response';
-            trialData.arrowRT.push(data.rt);  // RT for arrow key
+            trialData.arrowRT.push(data.rt+1000);  // RT for arrow key
             trialData.trialType.push('response');
           }
         }
