@@ -151,10 +151,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           var imgFolder = "";
           var randomNumber1, randomNumber2;
   
-          //
-          const minNum = 0;  // minimum value 0
-          const maxNum = 44; // maximum value 44 (the number of elements in each distribution is 45 and we want to get an index of those numbers)
-    
+          
       
           if (0 * eachClassTrialNumber <= trialClass && trialClass < 1 * eachClassTrialNumber) {
             imgFolder = "uniform";
@@ -194,67 +191,80 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           
       
           return `
-            <div class="trial-container">
-              <img src="img/${imgFolder}/back.jpg" class="large-image flip" id="revealed-card">
-              <img src="img/${imgFolder}/back.jpg" class="small-image" id="small-card">
+          <div class="trial-container">
+            <img src="img/${imgFolder}/back.jpg" class="large-image flip" id="revealed-card">
+            <img src="img/${imgFolder}/back.jpg" class="small-image" id="small-card">
                             
-        <div id="message" style="display: none; font-weight: bold; font-family: Arial, sans-serif; bottom: 2cm; position: absolute;">
-          my card is higher <span style="color: green; font-size: 24px;">&#8593;</span> arrow<br>
-          my card is lower <span style="color: red; font-size: 24px;">&#8595;</span> arrow
-        </div>
-
+            <div id="message" style="display: none; font-weight: bold; font-family: Arial, sans-serif; bottom: 2cm; position: absolute;">
+              my card is higher <span style="color: green; font-size: 24px;">&#8593;</span> arrow<br>
+              my card is lower <span style="color: red; font-size: 24px;">&#8595;</span> arrow
             </div>
-          `;
-        
-        },
-        choices: ['arrowup', 'arrowdown'], // Allow responses using up and down arrows
-        trial_duration: 3000, // 3000ms wait
-        on_load: function() {
-          var lastData = jsPsych.data.getLastTrialData().values()[0];
-          var imgFolder = lastData.imgFolder;
-
-          // Play the flip sound
-          var flipSound = new Audio('sound/flip.wav');  // Ensure the path to your sound file is correct
-          flipSound.play();
-      
-          // Flip the card after the trial starts
-          var revealedCard = document.getElementById('revealed-card');
-          setTimeout(function() {
-            // Show the front of the card after 100ms
-            revealedCard.src = `img/${imgFolder}/${lastRandomNumber1}.jpg`;
-            revealedCard.classList.add('flip-reveal');
-          }, 100); // 100ms delay for card flip
-      
-          setTimeout(function() {
-            // Show the message after 1000ms
-            document.getElementById('message').style.display = 'block';
-          }, 1000); // 1000ms delay before showing the message
-        },
-        on_finish: function(data) {
-          if (data.response === null) { // If no response
-            lastTrialType = 'timeout'; // Mark this trial as a timeout
     
-            MissedTrialOutput.TrialNumber.push(trialNumberIterate[i]);
-            MissedTrialOutput.Number1.push(lastRandomNumber1);
-            MissedTrialOutput.Number2.push(lastRandomNumber2);
-            // console.log("Missed Trial Added:", MissedTrialOutput); // Check here if trials are being added
-            trialData.trialType.push('timeout');
-            trialData.arrowRT.push('na');
-            trialData.outcome.push('na');
-            trialData.totalReward.push('na');
-            trialData.choice.push('na');
-
-          } else {
-            // Store the decision response
-            lastDecision = data.response;
-            lastTrialType = 'response';
-            trialData.arrowRT.push(data.rt+1000);  // RT for arrow key
-            trialData.trialType.push('response');
-          }
+          </div>
+        `;
+      },
+      choices: 'NO_KEYS', // Initially, no keys are allowed
+      trial_duration: 3000, 
+      on_load: function() {
+        var lastData = jsPsych.data.getLastTrialData().values()[0];
+        var imgFolder = lastData.imgFolder;
+    
+        // Play the flip sound
+        var flipSound = new Audio('sound/flip.wav');  
+        flipSound.play();
+    
+        // Flip the card after the trial starts
+        var revealedCard = document.getElementById('revealed-card');
+        setTimeout(function() {
+          // Show the front of the card after 100ms
+          revealedCard.src = `img/${imgFolder}/${lastRandomNumber1}.jpg`;
+          revealedCard.classList.add('flip-reveal');
+        }, 100); // 100ms delay for card flip
+    
+        // Show the message after 1000ms and enable key responses
+        setTimeout(function() {
+          document.getElementById('message').style.display = 'block';
+    
+          // Now enable the arrow key responses
+          jsPsych.pluginAPI.getKeyboardResponse({
+            callback_function: function(response_info) {
+              jsPsych.finishTrial({
+                response: response_info.key,
+                rt: response_info.rt
+              });
+            },
+            valid_responses: ['arrowup', 'arrowdown'],
+            rt_method: 'performance',
+            persist: false, // Only register the first response
+            allow_held_key: false
+          });
+        }, 1000); // Delay for 1000ms to show message and allow responses
+      },
+      on_finish: function(data) {
+        if (data.response === null) { 
+          lastTrialType = 'timeout'; 
+    
+          MissedTrial.TrialNumber.push(trialNumberIterate[i]);
+          MissedTrial.Number1.push(lastRandomNumber1);
+          MissedTrial.Number2.push(lastRandomNumber2);
+          trialData.trialType.push('timeout');
+          trialData.arrowRT.push('na');
+          trialData.outcome.push('na');
+          trialData.totalReward.push('na');
+          trialData.choice.push('na');
+        } else {
+          // Store the decision response
+          lastDecision = data.response;
+          lastTrialType = 'response';
+          trialData.arrowRT.push(data.rt + 1000);  // RT for arrow key, adjusted for 1000ms delay
+          trialData.trialType.push('response');
         }
-      };
-      
-  
+      }
+    };
+
+
+
+    
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   

@@ -169,185 +169,165 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // part 3
   
-      var revealImage = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: function() {
-          var trialClass = trialNumberIterate[i];
-          var imgFolder = "";
-          var randomNumber1, randomNumber2;
-  
-          //
-          const minNum = 0;  // minimum value 0
-          const maxNum = 44; // maximum value 44 (the number of elements in each distribution is 45 and we want to get an index of those numbers)
+    var revealImage = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function() {
+        var trialClass = trialNumberIterate[i];
+        var imgFolder = "";
+        var randomNumber1, randomNumber2;
     
-      
-          if (0 * eachClassTrialNumber <= trialClass && trialClass < 1 * eachClassTrialNumber) {
-            imgFolder = "uniform";
-            var temp_rand1_index;;
-            do {
-              temp_rand1_index = getRandomNumber(minNum, maxNum);
-            } while (deck_number1_uni_selected[temp_rand1_index] === 1);
-            randomNumber1 = deck_number1_uni[temp_rand1_index]; // large card
-            deck_number1_uni_selected[temp_rand1_index] = 1; // chosen flag =1;
-            // console.log({deck_number1_uni_selected});
-
-
-          var temp_rand2_index;
-          do {
-              do {
-                  temp_rand2_index = getRandomNumber(minNum, maxNum);
-              } while (deck_number2_uni_selected[temp_rand2_index] === 1); // Check if the index is already selected
-              
-              randomNumber2 = deck_number2_uni[temp_rand2_index]; // small card
-              
-              if (randomNumber1 !== randomNumber2) {
-                  deck_number2_uni_selected[temp_rand2_index] = 1; // mark the element as selected
-              }
-          } while (randomNumber2 === randomNumber1); // ensure they are different
-          // console.log({deck_number2_uni_selected});
-
-      
-            // console.log("random number1:", randomNumber1);
-            // console.log("random number2:", randomNumber2);
-            
-          } else if (1 * eachClassTrialNumber <= trialClass && trialClass < 2 * eachClassTrialNumber) {
-            imgFolder = "low";
-            
-            var temp_rand1_index;;
-            do {
-              temp_rand1_index = getRandomNumber(minNum, maxNum);
-            } while (deck_number1_low_selected[temp_rand1_index] === 1);
-            randomNumber1 = deck_number1_low[temp_rand1_index]; // large card
-            deck_number1_low_selected[temp_rand1_index] = 1; // chosen flag =1;
-            // console.log({deck_number1_low_selected});
-
-
-          var temp_rand2_index;
-          do {
-              do {
-                  temp_rand2_index = getRandomNumber(minNum, maxNum);
-              } while (deck_number2_low_selected[temp_rand2_index] === 1); // Check if the index is already selected
-              
-              randomNumber2 = deck_number2_low[temp_rand2_index]; // small card
-              
-              if (randomNumber1 !== randomNumber2) {
-                deck_number2_low_selected[temp_rand2_index] = 1; // mark the element as selected
-              }
-          } while (randomNumber2 === randomNumber1); // ensure they are different
-          // console.log({deck_number2_low_selected});
-  
-            // console.log("random number1:", randomNumber1);
-            // console.log("random number2:", randomNumber2);
-      
-          } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
-            imgFolder = "high";
-            var temp_rand1_index;;
-            do {
-              temp_rand1_index = getRandomNumber(minNum, maxNum);
-            } while (deck_number1_high_selected[temp_rand1_index] === 1);
-            randomNumber1 = deck_number1_high[temp_rand1_index]; // large card
-            deck_number1_high_selected[temp_rand1_index] = 1; // chosen flag =1;
-            // console.log({deck_number1_high_selected});
-
-          var temp_rand2_index;
-          do {
-              do {
-                  temp_rand2_index = getRandomNumber(minNum, maxNum);
-              } while (deck_number2_high_selected[temp_rand2_index] === 1); // Check if the index is already selected
-              
-              randomNumber2 = deck_number2_high[temp_rand2_index]; // small card
-              
-              if (randomNumber1 !== randomNumber2) {
-                deck_number2_high_selected[temp_rand2_index] = 1; // mark the element as selected
-              }
-          } while (randomNumber2 === randomNumber1); // ensure they are different
-          // console.log({deck_number2_high_selected});
-
-  
-            // console.log("random number1:", randomNumber1);
-            // console.log("random number2:", randomNumber2);
-          }
-      
-          lastRandomNumber1 = randomNumber1;
-          lastRandomNumber2 = randomNumber2;
-
-          // Store the selected imgFolder for the next function
-          jsPsych.data.write({ imgFolder: imgFolder });
-
-          trialData.myCard.push(randomNumber1);  // Store random number 1
-          trialData.yourCard.push(randomNumber2);  // Store random number 2
-      
-          // setTimeout(function() {
-          //   var revealedCard = document.getElementById('revealed-card');
-          //   revealedCard.src = `img/${imgFolder}/${randomNumber1}.jpg`;
-          //   revealedCard.classList.remove('flip');
-          //   revealedCard.classList.add('flip-reveal');
-          // }, 250); // Flip duration is 0.25 second
-          
-      
-          return `
-            <div class="trial-container">
-              <img src="img/${imgFolder}/back.jpg" class="large-image flip" id="revealed-card">
-              <img src="img/${imgFolder}/back.jpg" class="small-image" id="small-card">
-                            
-        <div id="message" style="display: none; font-weight: bold; font-family: Arial, sans-serif; bottom: 2cm; position: absolute;">
-          my card is higher <span style="color: green; font-size: 24px;">&#8593;</span> arrow<br>
-          my card is lower <span style="color: red; font-size: 24px;">&#8595;</span> arrow
-        </div>
-
-            </div>
-          `;
+        //
+        const minNum = 0;  // minimum value 0
+        const maxNum = 44; // maximum value 44 (the number of elements in each distribution is 45 and we want to get an index of those numbers)
         
-        },
-        choices: ['arrowup', 'arrowdown'], // Allow responses using up and down arrows
-        trial_duration: 3000, // 3000ms wait
-        on_load: function() {
-          var lastData = jsPsych.data.getLastTrialData().values()[0];
-          var imgFolder = lastData.imgFolder;
-
-          // Play the flip sound
-          var flipSound = new Audio('sound/flip.wav');  // Ensure the path to your sound file is correct
-          flipSound.play();
-      
-          // Flip the card after the trial starts
-          var revealedCard = document.getElementById('revealed-card');
-          setTimeout(function() {
-            // Show the front of the card after 100ms
-            revealedCard.src = `img/${imgFolder}/${lastRandomNumber1}.jpg`;
-            revealedCard.classList.add('flip-reveal');
-          }, 100); // 100ms delay for card flip
-      
-          setTimeout(function() {
-            // Show the message after 1000ms
-            document.getElementById('message').style.display = 'block';
-          }, 1000); // 1000ms delay before showing the message
-        },
-        on_finish: function(data) {
-          if (data.response === null) { // If no response
-            lastTrialType = 'timeout'; // Mark this trial as a timeout
-    
-            MissedTrial.TrialNumber.push(trialNumberIterate[i]);
-            MissedTrial.Number1.push(lastRandomNumber1);
-            MissedTrial.Number2.push(lastRandomNumber2);
-            // console.log("Missed Trial Added:", MissedTrial); // Check here if trials are being added
-            trialData.trialType.push('timeout');
-            trialData.arrowRT.push('na');
-            trialData.outcome.push('na');
-            trialData.totalReward.push('na');
-            trialData.choice.push('na');
+        if (0 * eachClassTrialNumber <= trialClass && trialClass < 1 * eachClassTrialNumber) {
+          imgFolder = "uniform";
+          var temp_rand1_index;
+          do {
+            temp_rand1_index = getRandomNumber(minNum, maxNum);
+          } while (deck_number1_uni_selected[temp_rand1_index] === 1);
+          randomNumber1 = deck_number1_uni[temp_rand1_index]; // large card
+          deck_number1_uni_selected[temp_rand1_index] = 1; // chosen flag =1;
+          
+          var temp_rand2_index;
+          do {
+            do {
+              temp_rand2_index = getRandomNumber(minNum, maxNum);
+            } while (deck_number2_uni_selected[temp_rand2_index] === 1); // Check if the index is already selected
             
-
-
-          } else {
-            // Store the decision response
-            lastDecision = data.response;
-            lastTrialType = 'response';
-            trialData.arrowRT.push(data.rt+1000);  // RT for arrow key
-            trialData.trialType.push('response');
-          }
+            randomNumber2 = deck_number2_uni[temp_rand2_index]; // small card
+            
+            if (randomNumber1 !== randomNumber2) {
+              deck_number2_uni_selected[temp_rand2_index] = 1; // mark the element as selected
+            }
+          } while (randomNumber2 === randomNumber1); // ensure they are different
+          
+        } else if (1 * eachClassTrialNumber <= trialClass && trialClass < 2 * eachClassTrialNumber) {
+          imgFolder = "low";
+          var temp_rand1_index;
+          do {
+            temp_rand1_index = getRandomNumber(minNum, maxNum);
+          } while (deck_number1_low_selected[temp_rand1_index] === 1);
+          randomNumber1 = deck_number1_low[temp_rand1_index]; // large card
+          deck_number1_low_selected[temp_rand1_index] = 1; // chosen flag =1;
+          
+          var temp_rand2_index;
+          do {
+            do {
+              temp_rand2_index = getRandomNumber(minNum, maxNum);
+            } while (deck_number2_low_selected[temp_rand2_index] === 1); // Check if the index is already selected
+            
+            randomNumber2 = deck_number2_low[temp_rand2_index]; // small card
+            
+            if (randomNumber1 !== randomNumber2) {
+              deck_number2_low_selected[temp_rand2_index] = 1; // mark the element as selected
+            }
+          } while (randomNumber2 === randomNumber1); // ensure they are different
+    
+        } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
+          imgFolder = "high";
+          var temp_rand1_index;
+          do {
+            temp_rand1_index = getRandomNumber(minNum, maxNum);
+          } while (deck_number1_high_selected[temp_rand1_index] === 1);
+          randomNumber1 = deck_number1_high[temp_rand1_index]; // large card
+          deck_number1_high_selected[temp_rand1_index] = 1; // chosen flag =1;
+          
+          var temp_rand2_index;
+          do {
+            do {
+              temp_rand2_index = getRandomNumber(minNum, maxNum);
+            } while (deck_number2_high_selected[temp_rand2_index] === 1); // Check if the index is already selected
+            
+            randomNumber2 = deck_number2_high[temp_rand2_index]; // small card
+            
+            if (randomNumber1 !== randomNumber2) {
+              deck_number2_high_selected[temp_rand2_index] = 1; // mark the element as selected
+            }
+          } while (randomNumber2 === randomNumber1); // ensure they are different
         }
-      };
-      
+    
+        lastRandomNumber1 = randomNumber1;
+        lastRandomNumber2 = randomNumber2;
+    
+        // Store the selected imgFolder for the next function
+        jsPsych.data.write({ imgFolder: imgFolder });
+    
+        trialData.myCard.push(randomNumber1);  // Store random number 1
+        trialData.yourCard.push(randomNumber2);  // Store random number 2
+    
+        return `
+          <div class="trial-container">
+            <img src="img/${imgFolder}/back.jpg" class="large-image flip" id="revealed-card">
+            <img src="img/${imgFolder}/back.jpg" class="small-image" id="small-card">
+                            
+            <div id="message" style="display: none; font-weight: bold; font-family: Arial, sans-serif; bottom: 2cm; position: absolute;">
+              my card is higher <span style="color: green; font-size: 24px;">&#8593;</span> arrow<br>
+              my card is lower <span style="color: red; font-size: 24px;">&#8595;</span> arrow
+            </div>
+    
+          </div>
+        `;
+      },
+      choices: 'NO_KEYS', // Initially, no keys are allowed
+      trial_duration: 3000, 
+      on_load: function() {
+        var lastData = jsPsych.data.getLastTrialData().values()[0];
+        var imgFolder = lastData.imgFolder;
+    
+        // Play the flip sound
+        var flipSound = new Audio('sound/flip.wav');  
+        flipSound.play();
+    
+        // Flip the card after the trial starts
+        var revealedCard = document.getElementById('revealed-card');
+        setTimeout(function() {
+          // Show the front of the card after 100ms
+          revealedCard.src = `img/${imgFolder}/${lastRandomNumber1}.jpg`;
+          revealedCard.classList.add('flip-reveal');
+        }, 100); // 100ms delay for card flip
+    
+        // Show the message after 1000ms and enable key responses
+        setTimeout(function() {
+          document.getElementById('message').style.display = 'block';
+    
+          // Now enable the arrow key responses
+          jsPsych.pluginAPI.getKeyboardResponse({
+            callback_function: function(response_info) {
+              jsPsych.finishTrial({
+                response: response_info.key,
+                rt: response_info.rt
+              });
+            },
+            valid_responses: ['arrowup', 'arrowdown'],
+            rt_method: 'performance',
+            persist: false, // Only register the first response
+            allow_held_key: false
+          });
+        }, 1000); // Delay for 1000ms to show message and allow responses
+      },
+      on_finish: function(data) {
+        if (data.response === null) { 
+          lastTrialType = 'timeout'; 
+    
+          MissedTrial.TrialNumber.push(trialNumberIterate[i]);
+          MissedTrial.Number1.push(lastRandomNumber1);
+          MissedTrial.Number2.push(lastRandomNumber2);
+          trialData.trialType.push('timeout');
+          trialData.arrowRT.push('na');
+          trialData.outcome.push('na');
+          trialData.totalReward.push('na');
+          trialData.choice.push('na');
+        } else {
+          // Store the decision response
+          lastDecision = data.response;
+          lastTrialType = 'response';
+          trialData.arrowRT.push(data.rt + 1000);  // RT for arrow key, adjusted for 1000ms delay
+          trialData.trialType.push('response');
+        }
+      }
+    };
+    
   
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
