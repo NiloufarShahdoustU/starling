@@ -167,7 +167,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
   
   
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // part 3
+    // part 3 reveal first card
   
     var revealImage = {
       type: jsPsychHtmlKeyboardResponse,
@@ -274,45 +274,53 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
       on_load: function() {
         var lastData = jsPsych.data.getLastTrialData().values()[0];
         var imgFolder = lastData.imgFolder;
-    
+      
         // Play the flip sound
         var flipSound = new Audio('sound/flip.wav');  
         flipSound.play();
-    
+      
         // Flip the card after the trial starts
         var revealedCard = document.getElementById('revealed-card');
         setTimeout(function() {
           // Show the front of the card after 100ms
           revealedCard.src = `img/${imgFolder}/${lastRandomNumber1}.jpg`;
           revealedCard.classList.add('flip-reveal');
-        }, 50); // 100ms delay for card flip
-    
+        }, 50); // 50ms delay for card flip
+      
         // Show the message after 1000ms and enable key responses
         setTimeout(function() {
-          document.getElementById('message').style.display = 'block';
-    
-          // Now enable the arrow key responses
-          jsPsych.pluginAPI.getKeyboardResponse({
-            callback_function: function(response_info) {
-              jsPsych.finishTrial({
-                response: response_info.key,
-                rt: response_info.rt
-              });
-            },
-            valid_responses: ['arrowup', 'arrowdown'],
-            rt_method: 'performance',
-            persist: false, // Only register the first response
-            allow_held_key: false
-          });
+          var messageElement = document.getElementById('message');
+          if (messageElement) {
+            messageElement.style.display = 'block';
+      
+            // Now enable the arrow key responses
+            jsPsych.pluginAPI.getKeyboardResponse({
+              callback_function: function(response_info) {
+                jsPsych.finishTrial({
+                  response: response_info.key,
+                  rt: response_info.rt
+                });
+              },
+              valid_responses: ['arrowup', 'arrowdown'],
+              rt_method: 'performance',
+              persist: false, // Only register the first response
+              allow_held_key: false
+            });
+          } else {
+            console.error("Element with id 'message' not found.");
+          }
         }, 1000); // Delay for 1000ms to show message and allow responses
       },
       on_finish: function(data) {
         if (data.response === null) { 
           lastTrialType = 'timeout'; 
     
+          //saving missed trials
           MissedTrial.TrialNumber.push(trialNumberIterate[i]);
           MissedTrial.Number1.push(lastRandomNumber1);
           MissedTrial.Number2.push(lastRandomNumber2);
+
+          // saving behavioral data, if it's timeout some colums are not applicable (na)
           trialData.trialType.push('timeout');
           trialData.arrowRT.push('na');
           trialData.outcome.push('na');

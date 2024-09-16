@@ -26,6 +26,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
       Number2: []
     };
     
+    
 
     var trialData = {
       trialIndex: [],
@@ -244,9 +245,9 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
         if (data.response === null) { 
           lastTrialType = 'timeout'; 
     
-          MissedTrial.TrialNumber.push(trialNumberIterate[i]);
-          MissedTrial.Number1.push(lastRandomNumber1);
-          MissedTrial.Number2.push(lastRandomNumber2);
+          MissedTrialOutput.TrialNumber.push(trialNumberIterate[i]);
+          MissedTrialOutput.Number1.push(lastRandomNumber1);
+          MissedTrialOutput.Number2.push(lastRandomNumber2);
           trialData.trialType.push('timeout');
           trialData.arrowRT.push('na');
           trialData.outcome.push('na');
