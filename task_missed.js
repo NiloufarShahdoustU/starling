@@ -260,7 +260,10 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           trialData.arrowRT.push(data.rt + 1000);  // RT for arrow key, adjusted for 1000ms delay
           trialData.trialType.push('response');
         }
-      }
+      
+        // Disable keyboard input after this point
+        jsPsych.pluginAPI.cancelAllKeyboardResponses();
+      }  
     };
 
 

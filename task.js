@@ -319,13 +319,13 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
       on_finish: function(data) {
         if (data.response === null) { 
           lastTrialType = 'timeout'; 
-    
+      
           //saving missed trials
           MissedTrial.TrialNumber.push(trialNumberIterate[i]);
           MissedTrial.Number1.push(lastRandomNumber1);
           MissedTrial.Number2.push(lastRandomNumber2);
-
-          // saving behavioral data, if it's timeout some colums are not applicable (na)
+      
+          // saving behavioral data, if it's timeout some columns are not applicable (na)
           trialData.trialType.push('timeout');
           trialData.arrowRT.push('na');
           trialData.outcome.push('na');
@@ -338,7 +338,10 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           trialData.arrowRT.push(data.rt + 1000);  // RT for arrow key, adjusted for 1000ms delay
           trialData.trialType.push('response');
         }
-      }
+      
+        // Disable keyboard input after this point
+        jsPsych.pluginAPI.cancelAllKeyboardResponses();
+      }      
     };
     
   
