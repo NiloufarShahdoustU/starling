@@ -282,18 +282,22 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
         // Flip the card after the trial starts
         var revealedCard = document.getElementById('revealed-card');
         setTimeout(function() {
-          // Show the front of the card after 100ms
+          // Show the front of the card after 50ms
           revealedCard.src = `img/${imgFolder}/${lastRandomNumber1}.jpg`;
           revealedCard.classList.add('flip-reveal');
-        }, 50); // 50ms delay for card flip
+        }, 50); // Delay for card flip
       
-        // Show the message after 1000ms and enable key responses
+        // Check for the existence of the message element and then display it
         setTimeout(function() {
           var messageElement = document.getElementById('message');
           if (messageElement) {
             messageElement.style.display = 'block';
+          } else {
+            console.error("Message element not found in the DOM.");
+          }
       
-            // Now enable the arrow key responses
+          // Now enable the arrow key responses if the message element exists
+          if (messageElement) {
             jsPsych.pluginAPI.getKeyboardResponse({
               callback_function: function(response_info) {
                 jsPsych.finishTrial({
@@ -306,11 +310,12 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
               persist: false, // Only register the first response
               allow_held_key: false
             });
-          } else {
-            console.error("Element with id 'message' not found.");
           }
-        }, 1000); // Delay for 1000ms to show message and allow responses
+      
+        }, 1000); // Delay to show message and allow responses
       },
+      
+      
       on_finish: function(data) {
         if (data.response === null) { 
           lastTrialType = 'timeout'; 
