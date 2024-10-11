@@ -1,5 +1,5 @@
 // global_variables.js
-export const NumberOfTrials = 9; // this should be 135
+export const NumberOfTrials = 3; // this should be 135
 export const ClassNumber = 3;
 export const eachClassTrialNumber = NumberOfTrials / ClassNumber;
 

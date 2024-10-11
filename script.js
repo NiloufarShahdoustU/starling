@@ -2,18 +2,7 @@ import { InitialRewardAmount, NumberOfTrials, eachClassTrialNumber } from './glo
 import { runTask } from './task.js';
 import { runTaskMissed } from './task_missed.js';
 import { taskDescription } from './task_description.js';
-
-// Dataset name trial
-var datasetNameTrial = {
-  type: jsPsychSurveyText,
-  questions: [
-    { prompt: "Please enter the name of the dataset:" }
-  ],
-  on_finish: function(data){
-    var datasetName = data.response.Q0; // Save the dataset name
-    jsPsych.data.addProperties({ datasetName: datasetName });
-  }
-};
+import { taskQuestionnaire } from './task_questionnaire.js';
 
 let taskData = [];
 
@@ -31,34 +20,12 @@ let allTaskData = {
   choice: []
 };
 
-
-
 const jsPsych = initJsPsych({
   on_finish: function() {
-    const csvData = convertAllTaskDataToCSV(allTaskData);  // Convert merged data to CSV
-    
-    // Get the dataset name from the last recorded trial
-    var datasetName = jsPsych.data.get().last(1).values()[0].datasetName;
-
-    // Define the filename with your desired path
-    var fileName = "data/" + datasetName + ".csv"; // Suggesting "data" directory
-
-    // Create a Blob and save the file
-    var blob = new Blob([csvData], { type: 'text/csv' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    a.download = fileName;  // This is the suggested filename
-    document.body.appendChild(a);
-    a.click();
-    URL.revokeObjectURL(url);
+    console.log("Experiment finished.");
+    // Download will be handled before questionnaire, so no need for extra download here
   }
 });
-
-
-
-
 
 function mergeTaskDataIntoAll(taskData, allTaskData) {
   for (let key in taskData) {
@@ -67,7 +34,6 @@ function mergeTaskDataIntoAll(taskData, allTaskData) {
     }
   }
 }
-
 
 function convertAllTaskDataToCSV(allTaskData) {
   const headers = Object.keys(allTaskData).join(",");
@@ -80,11 +46,37 @@ function convertAllTaskDataToCSV(allTaskData) {
   return headers + "\n" + rows.join("\n");
 }
 
+function downloadAllTaskData() {
+  const csvData = convertAllTaskDataToCSV(allTaskData);  // Convert merged data to CSV
 
+  var date = new Date();
+  var year = date.getFullYear();
+  var month = ("0" + (date.getMonth() + 1)).slice(-2); // Add leading zero
+  var day = ("0" + date.getDate()).slice(-2); // Add leading zero
+  var hours = ("0" + date.getHours()).slice(-2); // Add leading zero
+  var minutes = ("0" + date.getMinutes()).slice(-2); // Add leading zero
+  var seconds = ("0" + date.getSeconds()).slice(-2); // Add leading zero
+  var dateTime = `${day}_${month}_${year}_${hours}_${minutes}_${seconds}`;
+
+  
+    
+  // Define the filename with a timestamp or fixed name
+  var fileName = "task_data_" + dateTime + ".csv";  // Adds timestamp to make it unique
+
+  // Create a Blob and save the file
+  var blob = new Blob([csvData], { type: 'text/csv' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = url;
+  a.download = fileName;  // Downloads file with auto-generated name
+  document.body.appendChild(a);
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 // Function to handle missed trials asynchronously and merge taskData locally
 async function handleMissedTrials(MissedTrials, rewardInput) {
-  // Initialize a structured object to accumulate data for all missed trials
   let mergedTaskData = {
     arrowRT: [],
     distribution: [],
@@ -100,19 +92,12 @@ async function handleMissedTrials(MissedTrials, rewardInput) {
   };
 
   while (MissedTrials.TrialNumber.length > 0) {
-    // console.log("Now handling missed trials...");
-    
-    // Run the missed trials task
     const result = await runTaskMissed(jsPsych, MissedTrials, rewardInput);
 
     MissedTrials = result[0];
     rewardInput = result[1];
-    let taskData = result[2]; // Get taskData from the missed trials
-    
-    // Assume taskData comes in an object structure like:
-    // taskData = {arrowRT, distribution, interTrialInterval, outcome, myCard, yourCard, spaceRT, totalReward, trialNumber, trialType}
+    let taskData = result[2];
 
-    // Merge each field into the corresponding array in mergedTaskData
     mergedTaskData.arrowRT = mergedTaskData.arrowRT.concat(taskData.arrowRT);
     mergedTaskData.distribution = mergedTaskData.distribution.concat(taskData.distribution);
     mergedTaskData.interTrialInterval = mergedTaskData.interTrialInterval.concat(taskData.interTrialInterval);
@@ -124,24 +109,13 @@ async function handleMissedTrials(MissedTrials, rewardInput) {
     mergedTaskData.trialIndex = mergedTaskData.trialIndex.concat(taskData.trialIndex);
     mergedTaskData.trialType = mergedTaskData.trialType.concat(taskData.trialType);
     mergedTaskData.choice = mergedTaskData.choice.concat(taskData.choice);
-
-    // console.log("Missed trials completed.");
   }
-  
-  return { rewardInput, taskData: mergedTaskData }; // Return the merged taskData as one object
+
+  return { rewardInput, taskData: mergedTaskData };
 }
 
-
-
-
-
-
-// Function to run all tasks in sequence
 async function runAllTasks() {
   var timeline = [];
-
-  // Add the dataset name prompt at the beginning of the timeline
-  timeline.push(datasetNameTrial);
 
   // console.log("Starting description");
   const orderNumber = await taskDescription();
@@ -161,7 +135,6 @@ async function runAllTasks() {
 
   if (orderNumber == 1) {
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
-    // console.log("First round completed.");
     mergeTaskDataIntoAll(taskData, allTaskData);
 
     result = await handleMissedTrials(MissedTrials, WholeReward);
@@ -169,10 +142,7 @@ async function runAllTasks() {
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
 
-
-    // console.log("Starting second round...");
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
-    // console.log("Second round completed.");
     mergeTaskDataIntoAll(taskData, allTaskData);
 
     result = await handleMissedTrials(MissedTrials, WholeReward);
@@ -180,10 +150,7 @@ async function runAllTasks() {
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
 
-
-    // console.log("Starting third round...");
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
-    // console.log("Third round completed.");
     mergeTaskDataIntoAll(taskData, allTaskData);
 
     result = await handleMissedTrials(MissedTrials, WholeReward);
@@ -193,7 +160,6 @@ async function runAllTasks() {
 
   } else { // If order number is 2, the flow is: uni, high, low, then mixture of all these
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
-    // console.log("First round completed.");
     mergeTaskDataIntoAll(taskData, allTaskData);
 
     result = await handleMissedTrials(MissedTrials, WholeReward);
@@ -201,18 +167,14 @@ async function runAllTasks() {
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
 
-    // console.log("Starting second round...");
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
-    // console.log("Second round completed.");
     mergeTaskDataIntoAll(taskData, allTaskData);
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
 
-    // console.log("Starting third round...");
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
-    // console.log("Third round completed.");
     mergeTaskDataIntoAll(taskData, allTaskData);
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
@@ -221,34 +183,32 @@ async function runAllTasks() {
   }
 
   // Mixed rounds
-  // console.log("Starting mixed round 1...");
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(0 * eachClassTrialNumber, 1 * eachClassTrialNumber), WholeReward);
-  // console.log("Mixed round 1 completed.");
   mergeTaskDataIntoAll(taskData, allTaskData);
   result = await handleMissedTrials(MissedTrials, WholeReward);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
   mergeTaskDataIntoAll(taskData, allTaskData);
 
-  // console.log("Starting mixed round 2...");
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(1 * eachClassTrialNumber, 2 * eachClassTrialNumber), WholeReward);
-  // console.log("Mixed round 2 completed.");
   mergeTaskDataIntoAll(taskData, allTaskData);
   result = await handleMissedTrials(MissedTrials, WholeReward);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
   mergeTaskDataIntoAll(taskData, allTaskData);
 
-  // console.log("Starting mixed round 3...");
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(2 * eachClassTrialNumber, 3 * eachClassTrialNumber), WholeReward);
-  // console.log("Mixed round 3 completed.");
   mergeTaskDataIntoAll(taskData, allTaskData);
   result = await handleMissedTrials(MissedTrials, WholeReward);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
   mergeTaskDataIntoAll(taskData, allTaskData);
 
-  // console.log("All tasks completed.");
+  // Download data before questionnaire
+  downloadAllTaskData();
+
+  // Now run the questionnaire
+  await taskQuestionnaire(jsPsych);
 
   // Run the timeline
   jsPsych.run(timeline);
