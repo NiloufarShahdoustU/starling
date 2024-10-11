@@ -386,7 +386,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           
         },
         choices: "NO_KEYS",
-        trial_duration: 500
+        trial_duration: 1000
       };
       timeline.push(blankPage);
       timeline.push(fixation);

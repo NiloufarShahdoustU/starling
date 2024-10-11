@@ -457,7 +457,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           
         },
         choices: "NO_KEYS",
-        trial_duration: 500
+        trial_duration: 1000
       };
       timeline.push(blankPage);
       timeline.push(fixation);
