@@ -120,14 +120,19 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
             imgFolder = "high";
           }
-  
           return `
-            <div class="trial-container">
-              <img src="img/${imgFolder}/back.jpg" class="large-image">
-              <img src="img/${imgFolder}/back.jpg" class="small-image">
-              <div class="reveal-text">press <b>SPACE</b> to reveal your card</div>
+          <div class="trial-container">
+            <img src="img/${imgFolder}/back.jpg" class="large-image">
+            <img src="img/${imgFolder}/back.jpg" class="small-image">
+            <div class="reveal-text">
+              press <b>SPACE</b> to reveal your card <br>
+              
+              my card is higher <span style="color: green; font-size: 24px;">&#8593;</span> arrow<br>
+              my card is lower <span style="color: red; font-size: 24px;">&#8595;</span> arrow
             </div>
-          `;
+          </div>
+        `;
+        
         },
         choices: [' '], // The key name for space is ' '
         trial_duration: null, // This makes the trial wait indefinitely until 'space' is pressed
