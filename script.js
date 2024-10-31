@@ -148,6 +148,52 @@ async function RestMessage() {
 }
 
 
+async function UniMessage() {
+  await jsPsych.run([{
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: '<div style="font-size: 20px;">Uniform (black) Block: The black deck contains cards 1 to 9. All the cards have an equal chance of being selected. For example: if you draw a 2 it is likely that the agent\'s card is higher.<br><br>press <b>C</b> to continue.</div>',
+    choices: ['c'],
+    trial_duration: null 
+  }]);
+}
+
+
+
+
+
+async function LowMessage() {
+  await jsPsych.run([{
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: '<div style="font-size: 20px;">Low (orange) Block: The orange deck contains cards 1 to 9. The lower valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is lower.<br><br>press <b>C</b> to continue.</div>',
+    choices: ['c'],
+    trial_duration: null 
+  }]);
+}
+
+
+
+async function HighMessage() {
+  await jsPsych.run([{
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: '<div style="font-size: 20px;">High (green) Block: The green deck contains cards 1 to 9. The higher valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is higher.<br><br>press <b>C</b> to continue.</div>',
+    choices: ['c'],
+    trial_duration: null 
+  }]);
+}
+
+
+
+async function MixMessage() {
+  await jsPsych.run([{
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: '<div style="font-size: 20px;">Mixed Block: You will now see cards from the black, orange, and green decks. Cards from these decks will now appear randomly.<br><br>press <b>C</b> to continue.</div>',
+    choices: ['c'],
+    trial_duration: null 
+  }]);
+}
+
+
+
 
 async function runAllTasks() {
   var timeline = [];
@@ -171,6 +217,7 @@ async function runAllTasks() {
   if (orderNumber == 1) {
     
     await showBlockMessage(1);
+    await UniMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -182,7 +229,7 @@ async function runAllTasks() {
 
     await RestMessage();
     await showBlockMessage(2);
-
+    await LowMessage();
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
 
@@ -193,6 +240,7 @@ async function runAllTasks() {
 
     await RestMessage();
     await showBlockMessage(3);
+    await HighMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -204,6 +252,7 @@ async function runAllTasks() {
 
   } else { // If order number is 2, the flow is: uni, high, low, then mixture of all these
     await showBlockMessage(1);
+    await UniMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -215,6 +264,7 @@ async function runAllTasks() {
 
     await RestMessage();
     await showBlockMessage(2);
+    await HighMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -227,6 +277,7 @@ async function runAllTasks() {
 
     await RestMessage();
     await showBlockMessage(3);
+    await LowMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -239,6 +290,7 @@ async function runAllTasks() {
   // Mixed rounds
   await RestMessage();
   await showBlockMessageMixed(4);
+  await MixMessage();
 
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(0 * eachClassTrialNumber, 1 * eachClassTrialNumber), WholeReward);
   mergeTaskDataIntoAll(taskData, allTaskData);
