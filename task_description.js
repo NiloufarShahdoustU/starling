@@ -16,7 +16,7 @@ export function taskDescription() {
       type: jsPsychHtmlButtonResponse,  // Use the button response plugin 
       stimulus: ` 
     <div class="center"> 
-      <h2>Select Your Order</h2> 
+      <h2>Select an order randomly.</h2> 
     </div> 
   `, 
       choices: ['Order 1', 'Order 2'],  // Labels for the buttons 
