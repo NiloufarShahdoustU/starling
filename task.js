@@ -24,7 +24,47 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
     var TotalRewardAmount = rewardInput; 
 
 
+ 
     // Deck initialization
+    // Preload images
+    var preload = {
+      type: jsPsychPreload,
+      images: [
+        'img/uniform/back.jpg', 
+        'img/low/back.jpg', 
+        'img/high/back.jpg',
+        'img/uniform/1.jpg', 
+        'img/uniform/2.jpg', 
+        'img/uniform/3.jpg',
+        'img/uniform/4.jpg', 
+        'img/uniform/5.jpg', 
+        'img/uniform/6.jpg',
+        'img/uniform/7.jpg', 
+        'img/uniform/8.jpg', 
+        'img/uniform/9.jpg',
+        'img/low/1.jpg', 
+        'img/low/2.jpg', 
+        'img/low/3.jpg', 
+        'img/low/4.jpg', 
+        'img/low/5.jpg', 
+        'img/low/6.jpg', 
+        'img/low/7.jpg', 
+        'img/low/8.jpg', 
+        'img/low/9.jpg',
+        'img/high/1.jpg', 
+        'img/high/2.jpg', 
+        'img/high/3.jpg', 
+        'img/high/4.jpg', 
+        'img/high/5.jpg', 
+        'img/high/6.jpg', 
+        'img/high/7.jpg', 
+        'img/high/8.jpg', 
+        'img/high/9.jpg'
+      ],
+      message: 'Loading images, Please wait...'
+    };
+    timeline.push(preload);
+    
 
     var trialNumberIterate = trialNumberIterate_input;
     // console.log(trialNumberIterate);
@@ -71,16 +111,16 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
   // Iterate through each trial and add the blank page and fixation trial before the actual trial
     for (let i = 0; i < eachClassTrialNumber; i++) {
 
-      // I need to put the rest page before beginning of each task and NOT after the first one
-      if (i == 0 && trialNumberIterate[i] != 0 && trialNumberIterate[i+1] != 1 && trialNumberIterate[i+2] != 2) {  
-        var restScreen = {
-            type: jsPsychHtmlKeyboardResponse,
-            stimulus: '<div style="font-size: 30px;">You can have some rest! <br>press <b>C</b> to continue.</div>',
-            choices: ['c'], 
-            trial_duration: null 
-        };
-        timeline.push(restScreen);
-    }
+    //   // I need to put the rest page before beginning of each task and NOT before the first one
+    //   if (i == 0 && trialNumberIterate[i] != 0 && trialNumberIterate[i+1] != 1 && trialNumberIterate[i+2] != 2) {  
+    //     var restScreen = {
+    //         type: jsPsychHtmlKeyboardResponse,
+    //         stimulus: '<div style="font-size: 30px;">You can have some rest! <br>press <b>C</b> to continue.</div>',
+    //         choices: ['c'], 
+    //         trial_duration: null 
+    //     };
+    //     timeline.push(restScreen);
+    // }
     
 
       // Add a blank page with a random duration between 750 and 1000 ms
@@ -269,8 +309,6 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
             <img src="img/${imgFolder}/back.jpg" class="small-image" id="small-card">
                             
             <div id="message" style="display: none; font-weight: bold; font-family: Arial, sans-serif; bottom: 2cm; position: absolute;">
-              my card is higher <span style="color: green; font-size: 24px;">&#8593;</span> arrow<br>
-              my card is lower <span style="color: red; font-size: 24px;">&#8595;</span> arrow
             </div>
     
           </div>
@@ -410,7 +448,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           }
         },
         choices: "NO_KEYS",
-        trial_duration: 1000
+        trial_duration: 2000
       };
       
       

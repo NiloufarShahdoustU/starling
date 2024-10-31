@@ -114,6 +114,41 @@ async function handleMissedTrials(MissedTrials, rewardInput) {
   return { rewardInput, taskData: mergedTaskData };
 }
 
+
+
+
+// Function to show a block message
+async function showBlockMessage(blockNumber) {
+  await jsPsych.run([{
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `<p>This is block (${blockNumber}/4). It will take around 5 minutes to complete.</p>`,
+    choices: "NO_KEYS",
+    trial_duration:2000 // Display for 2 seconds
+  }]);
+}
+
+async function showBlockMessageMixed(blockNumber) {
+  await jsPsych.run([{
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `<p>This is block (${blockNumber}/4). It will take around 15 minutes to complete.</p>`,
+    choices: "NO_KEYS",
+    trial_duration: 2000 // Display for 2 seconds
+  }]);
+}
+
+
+
+async function RestMessage() {
+  await jsPsych.run([{
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: '<div style="font-size: 30px;">You can have some rest! <br>press <b>C</b> to continue.</div>',
+    choices: ['c'],
+    trial_duration: null 
+  }]);
+}
+
+
+
 async function runAllTasks() {
   var timeline = [];
 
@@ -134,6 +169,9 @@ async function runAllTasks() {
   let result;
 
   if (orderNumber == 1) {
+    
+    await showBlockMessage(1);
+
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
 
@@ -142,6 +180,9 @@ async function runAllTasks() {
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
 
+    await RestMessage();
+    await showBlockMessage(2);
+
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
 
@@ -149,6 +190,9 @@ async function runAllTasks() {
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
+
+    await RestMessage();
+    await showBlockMessage(3);
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -159,6 +203,8 @@ async function runAllTasks() {
     mergeTaskDataIntoAll(taskData, allTaskData);
 
   } else { // If order number is 2, the flow is: uni, high, low, then mixture of all these
+    await showBlockMessage(1);
+
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
 
@@ -167,12 +213,20 @@ async function runAllTasks() {
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
 
+    await RestMessage();
+    await showBlockMessage(2);
+
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
     result = await handleMissedTrials(MissedTrials, WholeReward);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
+
+
+
+    await RestMessage();
+    await showBlockMessage(3);
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -183,6 +237,9 @@ async function runAllTasks() {
   }
 
   // Mixed rounds
+  await RestMessage();
+  await showBlockMessageMixed(4);
+
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(0 * eachClassTrialNumber, 1 * eachClassTrialNumber), WholeReward);
   mergeTaskDataIntoAll(taskData, allTaskData);
   result = await handleMissedTrials(MissedTrials, WholeReward);

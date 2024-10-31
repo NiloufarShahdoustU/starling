@@ -20,6 +20,9 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
 
     var TotalRewardAmount = rewardInput;
 
+    // Deck initialization
+    
+
     var MissedTrialOutput = {
       TrialNumber: [],
       Number1: [],
@@ -202,8 +205,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
             <img src="img/${imgFolder}/back.jpg" class="small-image" id="small-card">
                             
             <div id="message" style="display: none; font-weight: bold; font-family: Arial, sans-serif; bottom: 2cm; position: absolute;">
-              my card is higher <span style="color: green; font-size: 24px;">&#8593;</span> arrow<br>
-              my card is lower <span style="color: red; font-size: 24px;">&#8595;</span> arrow
+
             </div>
     
           </div>
@@ -335,7 +337,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           }
         },
         choices: "NO_KEYS",
-        trial_duration: 1000
+        trial_duration: 2000
       };
       
       

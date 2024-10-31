@@ -128,9 +128,11 @@ timeline.push(demographic_form);
     <div class="center"> 
       <h2>Task Description</h2> 
       <img src="img/des.png" width="30%"> 
-      <p>The aim of this game is to play the cards in <b>ascending order</b>. For example, play a three before an eight.</p> 
-      <p>Please decide whether you want to <b>PLAY (up arrow)</b> your card first or <b>HOLD (down arrow)</b> your card to play second.</p> 
-      <p>You win money for every card you play correctly, and lose money for every card you play incorrectly!</p> 
+      <p>Hello! The task will take almost <b>30 minutes</b> to complete. Also there is a questionnaire at the end of the task which will take 10 minutes to complete.</p>
+      <p>Your card is the card in the middle of the screen and your opponent's card is on top right of the screen.</p> 
+      <p>The aim of this game is to to guess if your card is higher or lower than your opponent's card.</p> 
+      <p>Please decide whether <b>my card is higher (up arrow)</b> or <b>my card is lower (down arrow)</b>.</p> 
+      <p>You win money for every card you guess correctly, and lose money for every card you guess incorrectly!</p> 
     </div> 
     <div class="center" style="margin-top: 20px;"> 
       <p style="font-size: 20px; text-align: center;">Press <b>SPACE</b> to start</p> 
