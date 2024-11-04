@@ -47,16 +47,16 @@ export function taskQuestionnaire(jsPsych) {
         // Show thank you message and then resolve
         document.body.innerHTML = `
         <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-          <h1 style="font-size: 24px; text-align: center;">Thank you for your participation!</h1>
+          <h1 style="font-size: 24px; text-align: center;"> </h1>
         </div>
       `;
       
         
         // After showing the thank you message for a while, resolve the promise
         setTimeout(() => {
-          window.location = "https://www.neurosmiths.org/tasks.html";
+          // window.location = "https://www.neurosmiths.org/tasks.html";
           resolve(); 
-        }, 3000); // 3-second delay before redirecting
+        }, 500); // 500ms
       } 
     }); 
 

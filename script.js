@@ -3,6 +3,7 @@ import { runTask } from './task.js';
 import { runTaskMissed } from './task_missed.js';
 import { taskDescription } from './task_description.js';
 import { taskQuestionnaire } from './task_questionnaire.js';
+import { taskQuestionnaire2 } from './task_questionnaire2.js';
 
 let taskData = [];
 
@@ -151,7 +152,15 @@ async function RestMessage() {
 async function UniMessage() {
   await jsPsych.run([{
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: '<div style="font-size: 20px;">Uniform (black) Block: The black deck contains cards 1 to 9. All the cards have an equal chance of being selected. For example: if you draw a 2 it is likely that the agent\'s card is higher.<br><br>press <b>C</b> to continue.</div>',
+    stimulus: `
+      <div style="text-align: center;">
+        <img src="img/uniform/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
+        <div style="font-size: 20px;">
+          Uniform (black) Block: The black deck contains cards 1 to 9. All the cards have an equal chance of being selected. For example: if you draw a 2 it is likely that the agent's card is higher.
+          <br><br>Press <b>C</b> to continue.
+        </div>
+      </div>
+    `,
     choices: ['c'],
     trial_duration: null 
   }]);
@@ -161,10 +170,19 @@ async function UniMessage() {
 
 
 
+
 async function LowMessage() {
   await jsPsych.run([{
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: '<div style="font-size: 20px;">Low (orange) Block: The orange deck contains cards 1 to 9. The lower valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is lower.<br><br>press <b>C</b> to continue.</div>',
+    stimulus: `
+    <div style="text-align: center;">
+    <img src="img/low/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
+   <div style="font-size: 20px;">
+    Low (orange) Block: The orange deck contains cards 1 to 9. The lower valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is lower.
+    <br><br>press <b>C</b> to continue.
+            </div>
+      </div>
+    `,
     choices: ['c'],
     trial_duration: null 
   }]);
@@ -175,7 +193,15 @@ async function LowMessage() {
 async function HighMessage() {
   await jsPsych.run([{
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: '<div style="font-size: 20px;">High (green) Block: The green deck contains cards 1 to 9. The higher valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is higher.<br><br>press <b>C</b> to continue.</div>',
+    stimulus: `
+    <div style="text-align: center;">
+    <img src="img/high/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
+    <div style="font-size: 20px;">
+    High (green) Block: The green deck contains cards 1 to 9. The higher valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is higher.
+    <br><br>press <b>C</b> to continue.
+            </div>
+      </div>
+    `,
     choices: ['c'],
     trial_duration: null 
   }]);
@@ -186,13 +212,31 @@ async function HighMessage() {
 async function MixMessage() {
   await jsPsych.run([{
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: '<div style="font-size: 20px;">Mixed Block: You will now see cards from the black, orange, and green decks. Cards from these decks will now appear randomly.<br><br>press <b>C</b> to continue.</div>',
+    stimulus: `
+        <div style="text-align: center;">
+    <img src="img/uniform/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
+    <img src="img/low/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
+    <img src="img/high/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
+    <div style="font-size: 20px;">Mixed Block: You will now see cards from the black, orange, and green decks. Cards from these decks will now appear randomly.
+    <br><br>press <b>C</b> to continue.
+           </div>
+      </div>
+    `,
     choices: ['c'],
     trial_duration: null 
   }]);
 }
 
 
+
+async function QuestionnairesMessage() {
+  await jsPsych.run([{
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: '<div style="font-size: 30px;">Thank you very much! Please<br>press <b>C</b> to continue to the next questionnaire.</div>',
+    choices: ['c'],
+    trial_duration: null 
+  }]);
+}
 
 
 async function runAllTasks() {
@@ -318,6 +362,8 @@ async function runAllTasks() {
 
   // Now run the questionnaire
   await taskQuestionnaire(jsPsych);
+  await QuestionnairesMessage();
+  await taskQuestionnaire2(jsPsych);
 
   // Run the timeline
   jsPsych.run(timeline);
