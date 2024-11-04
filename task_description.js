@@ -130,8 +130,9 @@ timeline.push(demographic_form);
       <img src="img/des.png" width="30%"> 
       <p>Hello! The task will take almost <b>30 minutes</b> to complete. Also there is a questionnaire at the end of the task which will take 10 minutes to complete.</p>
       <p>Your card is the card in the middle of the screen and your opponent's card is on top right of the screen.</p> 
-      <p>The aim of this game is to to guess if your card is higher or lower than your opponent's card.</p> 
-      <p>Please decide whether <b>my card is higher (up arrow)</b> or <b>my card is lower (down arrow)</b>.</p> 
+      <p>The aim of this game is to guess if your card is higher or lower than your opponent's card.</p> 
+      <p>Please decide whether <b>your card is higher (press the up arrow)</b> or </b>your card is lower (press the down arrow)</b>.</p> 
+      <p>Please respond as fast as you can once you have made your decision.</p>
       <p>You win money for every card you guess correctly, and lose money for every card you guess incorrectly!</p> 
     </div> 
     <div class="center" style="margin-top: 20px;"> 
