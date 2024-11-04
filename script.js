@@ -116,29 +116,6 @@ async function handleMissedTrials(MissedTrials, rewardInput) {
 }
 
 
-
-
-// Function to show a block message
-async function showBlockMessage(blockNumber) {
-  await jsPsych.run([{
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<p>This is block (${blockNumber}/4). It will take around 5 minutes to complete.</p>`,
-    choices: "NO_KEYS",
-    trial_duration:2000 // Display for 2 seconds
-  }]);
-}
-
-async function showBlockMessageMixed(blockNumber) {
-  await jsPsych.run([{
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<p>This is block (${blockNumber}/4). It will take around 15 minutes to complete.</p>`,
-    choices: "NO_KEYS",
-    trial_duration: 2000 // Display for 2 seconds
-  }]);
-}
-
-
-
 async function RestMessage() {
   await jsPsych.run([{
     type: jsPsychHtmlKeyboardResponse,
@@ -149,6 +126,9 @@ async function RestMessage() {
 }
 
 
+
+
+
 async function UniMessage() {
   await jsPsych.run([{
     type: jsPsychHtmlKeyboardResponse,
@@ -156,7 +136,8 @@ async function UniMessage() {
       <div style="text-align: center;">
         <img src="img/uniform/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
         <div style="font-size: 20px;">
-          Uniform (black) Block: The black deck contains cards 1 to 9. All the cards have an equal chance of being selected. For example: if you draw a 2 it is likely that the agent's card is higher.
+          <p>This is <b>block (1/4)</b>. It will take around 5 minutes to complete.</p>
+          <p>The black deck contains cards 1 to 9. All the cards have an equal chance of being selected. For example: if you draw a 2 it is likely that the agent's card is higher.</p>
           <br><br>Press <b>C</b> to continue.
         </div>
       </div>
@@ -171,14 +152,15 @@ async function UniMessage() {
 
 
 
-async function LowMessage() {
+async function LowFirstMessage() {
   await jsPsych.run([{
     type: jsPsychHtmlKeyboardResponse,
     stimulus: `
     <div style="text-align: center;">
     <img src="img/low/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
    <div style="font-size: 20px;">
-    Low (orange) Block: The orange deck contains cards 1 to 9. The lower valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is lower.
+   <p>This is <b>block (2/4)</b>. It will take around 5 minutes to complete.</p>
+    <p>The orange deck contains cards 1 to 9. The lower valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is lower.</p>
     <br><br>press <b>C</b> to continue.
             </div>
       </div>
@@ -189,15 +171,34 @@ async function LowMessage() {
 }
 
 
+async function LowSecondMessage() {
+  await jsPsych.run([{
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+    <div style="text-align: center;">
+    <img src="img/low/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
+   <div style="font-size: 20px;">
+   <p>This is <b>block (3/4)</b>. It will take around 5 minutes to complete.</p>
+    <p>The orange deck contains cards 1 to 9. The lower valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is lower.</p>
+    <br><br>press <b>C</b> to continue.
+            </div>
+      </div>
+    `,
+    choices: ['c'],
+    trial_duration: null 
+  }]);
+}
 
-async function HighMessage() {
+
+async function HighFirstMessage() {
   await jsPsych.run([{
     type: jsPsychHtmlKeyboardResponse,
     stimulus: `
     <div style="text-align: center;">
     <img src="img/high/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
     <div style="font-size: 20px;">
-    High (green) Block: The green deck contains cards 1 to 9. The higher valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is higher.
+     <p>This is <b>block (2/4)</b>. It will take around 5 minutes to complete.</p>
+    <p>The green deck contains cards 1 to 9. The higher valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is higher.</p>
     <br><br>press <b>C</b> to continue.
             </div>
       </div>
@@ -207,6 +208,24 @@ async function HighMessage() {
   }]);
 }
 
+
+async function HighSecondMessage() {
+  await jsPsych.run([{
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+    <div style="text-align: center;">
+    <img src="img/high/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
+    <div style="font-size: 20px;">
+     <p>This is <b>block (3/4)</b>. It will take around 5 minutes to complete.</p>
+    <p>The green deck contains cards 1 to 9. The higher valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is higher.</p>
+    <br><br>press <b>C</b> to continue.
+            </div>
+      </div>
+    `,
+    choices: ['c'],
+    trial_duration: null 
+  }]);
+}
 
 
 async function MixMessage() {
@@ -214,18 +233,26 @@ async function MixMessage() {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: `
         <div style="text-align: center;">
-    <img src="img/uniform/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
-    <img src="img/low/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
-    <img src="img/high/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
-    <div style="font-size: 20px;">Mixed Block: You will now see cards from the black, orange, and green decks. Cards from these decks will now appear randomly.
-    <br><br>press <b>C</b> to continue.
-           </div>
-      </div>
+            <img src="img/uniform/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
+            <img src="img/low/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
+            <img src="img/high/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
+            <div style="font-size: 20px;">
+                <p>This is <b>block (4/4)</b>. It will take around 15 minutes to complete. You will now see cards from the black, orange, and green decks. Cards from these decks will now appear randomly.</p>
+                <p>Try to remember:</p>
+                <p>For the black deck: <b>All the cards have an equal chance</b> of being selected.</p>
+                <p>For the orange deck: The <b>lower valued cards have more chance</b> of being selected.</p>
+                <p>For the green deck: The <b>higher valued cards have more chance of</b> being selected.</p>
+                <br><br>Press <b>C</b> to continue.
+            </div>
+        </div>
     `,
     choices: ['c'],
     trial_duration: null 
   }]);
 }
+
+
+
 
 
 
@@ -237,6 +264,8 @@ async function QuestionnairesMessage() {
     trial_duration: null 
   }]);
 }
+
+
 
 
 async function runAllTasks() {
@@ -260,7 +289,6 @@ async function runAllTasks() {
 
   if (orderNumber == 1) {
     
-    await showBlockMessage(1);
     await UniMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
@@ -272,8 +300,7 @@ async function runAllTasks() {
     mergeTaskDataIntoAll(taskData, allTaskData);
 
     await RestMessage();
-    await showBlockMessage(2);
-    await LowMessage();
+    await LowFirstMessage();
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
 
@@ -283,8 +310,7 @@ async function runAllTasks() {
     mergeTaskDataIntoAll(taskData, allTaskData);
 
     await RestMessage();
-    await showBlockMessage(3);
-    await HighMessage();
+    await HighSecondMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -295,7 +321,6 @@ async function runAllTasks() {
     mergeTaskDataIntoAll(taskData, allTaskData);
 
   } else { // If order number is 2, the flow is: uni, high, low, then mixture of all these
-    await showBlockMessage(1);
     await UniMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
@@ -307,8 +332,7 @@ async function runAllTasks() {
     mergeTaskDataIntoAll(taskData, allTaskData);
 
     await RestMessage();
-    await showBlockMessage(2);
-    await HighMessage();
+    await HighFirstMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -320,8 +344,7 @@ async function runAllTasks() {
 
 
     await RestMessage();
-    await showBlockMessage(3);
-    await LowMessage();
+    await LowSecondMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -333,7 +356,6 @@ async function runAllTasks() {
 
   // Mixed rounds
   await RestMessage();
-  await showBlockMessageMixed(4);
   await MixMessage();
 
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(0 * eachClassTrialNumber, 1 * eachClassTrialNumber), WholeReward);
