@@ -315,7 +315,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
         `;
       },
       choices: 'NO_KEYS', // Initially, no keys are allowed
-      trial_duration: 3000, 
+      trial_duration: 3000,  //this is that 3000 wait time before the time is up message shows up
       on_load: function() {
         var lastData = jsPsych.data.getLastTrialData().values()[0];
         var imgFolder = lastData.imgFolder;
@@ -357,7 +357,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
             });
           }
       
-        }, 1000); // Delay to show message and allow responses
+        }, 1000); // Delay to allow responses after this
       },
       
       
