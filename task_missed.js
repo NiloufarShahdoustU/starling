@@ -1,7 +1,7 @@
 
 import { RewardAmount, eachClassTrialNumber } from './global_variables.js';
 
-export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
+export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput, blockNumber) {
   // Initialize jsPsych here if it's not initialized elsewhere
   // trialNumberIterate_input is the order of trials. 
   return new Promise((resolve, reject) => {
@@ -41,7 +41,8 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
       myCard: [],
       yourCard: [],
       interTrialInterval: [],
-      choice: []
+      choice: [],
+      block: []
     };
     // Deck initialization
 
@@ -60,6 +61,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
   
   // Iterate through each trial and add the blank page and fixation trial before the actual trial
     for (let i = 0; i < trialNumberIterate.length; i++) {
+      trialData.block.push(blockNumber);
       
       // Add a blank page with a random duration between 750 and 1000 ms
       var blankPage = {
@@ -483,6 +485,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
               rewardChangeColor = 'red';
             }
             TotalRewardAmount += rewardChange;
+             
           }
           else {
             return `
@@ -498,7 +501,6 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           }
 
           trialData.totalReward.push(TotalRewardAmount);
-          trialData.choice.push(lastDecision);
           
           return `
             <div class="trial-container">

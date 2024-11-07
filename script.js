@@ -18,7 +18,8 @@ let allTaskData = {
   totalReward: [],
   trialIndex: [],
   trialType: [],
-  choice: []
+  choice: [],
+  block: []
 };
 
 const jsPsych = initJsPsych({
@@ -77,7 +78,7 @@ function downloadAllTaskData() {
 }
 
 // Function to handle missed trials asynchronously and merge taskData locally
-async function handleMissedTrials(MissedTrials, rewardInput) {
+async function handleMissedTrials(MissedTrials, rewardInput, blockNumber) {
   let mergedTaskData = {
     arrowRT: [],
     distribution: [],
@@ -89,11 +90,12 @@ async function handleMissedTrials(MissedTrials, rewardInput) {
     totalReward: [],
     trialIndex: [],
     trialType: [],
-    choice: []
+    choice: [],
+    block: []
   };
 
   while (MissedTrials.TrialNumber.length > 0) {
-    const result = await runTaskMissed(jsPsych, MissedTrials, rewardInput);
+    const result = await runTaskMissed(jsPsych, MissedTrials, rewardInput, blockNumber);
 
     MissedTrials = result[0];
     rewardInput = result[1];
@@ -110,6 +112,7 @@ async function handleMissedTrials(MissedTrials, rewardInput) {
     mergedTaskData.trialIndex = mergedTaskData.trialIndex.concat(taskData.trialIndex);
     mergedTaskData.trialType = mergedTaskData.trialType.concat(taskData.trialType);
     mergedTaskData.choice = mergedTaskData.choice.concat(taskData.choice);
+    mergedTaskData.block = mergedTaskData.block.concat(taskData.block);
   }
 
   return { rewardInput, taskData: mergedTaskData };
@@ -291,20 +294,20 @@ async function runAllTasks() {
     
     await UniMessage();
 
-    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
+    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward, 1);
     mergeTaskDataIntoAll(taskData, allTaskData);
 
-    result = await handleMissedTrials(MissedTrials, WholeReward);
+    result = await handleMissedTrials(MissedTrials, WholeReward,1);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
 
     await RestMessage();
     await LowFirstMessage();
-    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
+    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward,2);
     mergeTaskDataIntoAll(taskData, allTaskData);
 
-    result = await handleMissedTrials(MissedTrials, WholeReward);
+    result = await handleMissedTrials(MissedTrials, WholeReward,2);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -312,10 +315,10 @@ async function runAllTasks() {
     await RestMessage();
     await HighSecondMessage();
 
-    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
+    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward,3);
     mergeTaskDataIntoAll(taskData, allTaskData);
 
-    result = await handleMissedTrials(MissedTrials, WholeReward);
+    result = await handleMissedTrials(MissedTrials, WholeReward,3);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -323,10 +326,10 @@ async function runAllTasks() {
   } else { // If order number is 2, the flow is: uni, high, low, then mixture of all these
     await UniMessage();
 
-    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward);
+    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward,1);
     mergeTaskDataIntoAll(taskData, allTaskData);
 
-    result = await handleMissedTrials(MissedTrials, WholeReward);
+    result = await handleMissedTrials(MissedTrials, WholeReward,1);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -334,9 +337,9 @@ async function runAllTasks() {
     await RestMessage();
     await HighFirstMessage();
 
-    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward);
+    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward,2);
     mergeTaskDataIntoAll(taskData, allTaskData);
-    result = await handleMissedTrials(MissedTrials, WholeReward);
+    result = await handleMissedTrials(MissedTrials, WholeReward,2);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -346,9 +349,9 @@ async function runAllTasks() {
     await RestMessage();
     await LowSecondMessage();
 
-    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward);
+    [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward,3);
     mergeTaskDataIntoAll(taskData, allTaskData);
-    result = await handleMissedTrials(MissedTrials, WholeReward);
+    result = await handleMissedTrials(MissedTrials, WholeReward,3);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
@@ -358,23 +361,23 @@ async function runAllTasks() {
   await RestMessage();
   await MixMessage();
 
-  [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(0 * eachClassTrialNumber, 1 * eachClassTrialNumber), WholeReward);
+  [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(0 * eachClassTrialNumber, 1 * eachClassTrialNumber), WholeReward,4);
   mergeTaskDataIntoAll(taskData, allTaskData);
-  result = await handleMissedTrials(MissedTrials, WholeReward);
+  result = await handleMissedTrials(MissedTrials, WholeReward,4);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
   mergeTaskDataIntoAll(taskData, allTaskData);
 
-  [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(1 * eachClassTrialNumber, 2 * eachClassTrialNumber), WholeReward);
+  [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(1 * eachClassTrialNumber, 2 * eachClassTrialNumber), WholeReward,4);
   mergeTaskDataIntoAll(taskData, allTaskData);
-  result = await handleMissedTrials(MissedTrials, WholeReward);
+  result = await handleMissedTrials(MissedTrials, WholeReward,4);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
   mergeTaskDataIntoAll(taskData, allTaskData);
 
-  [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(2 * eachClassTrialNumber, 3 * eachClassTrialNumber), WholeReward);
+  [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(2 * eachClassTrialNumber, 3 * eachClassTrialNumber), WholeReward,4);
   mergeTaskDataIntoAll(taskData, allTaskData);
-  result = await handleMissedTrials(MissedTrials, WholeReward);
+  result = await handleMissedTrials(MissedTrials, WholeReward,4);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
   mergeTaskDataIntoAll(taskData, allTaskData);

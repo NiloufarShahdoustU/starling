@@ -1,7 +1,7 @@
 import { deck_number1_uni, deck_number2_uni, deck_number1_low, deck_number2_low, deck_number1_high, deck_number2_high, eachClassTrialNumber } from './global_variables.js';
 import{ RewardAmount} from './global_variables.js';
 
-export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
+export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNumber) {
   // Initialize jsPsych here if it's not initialized elsewhere
   // trialNumberIterate_input is the order of trials. 
   return new Promise((resolve, reject) => {
@@ -96,7 +96,8 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
       myCard: [],
       yourCard: [],
       interTrialInterval: [],
-      choice: []
+      choice: [],
+      block: []
     };
 
 
@@ -110,6 +111,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
   
   // Iterate through each trial and add the blank page and fixation trial before the actual trial
     for (let i = 0; i < eachClassTrialNumber; i++) {
+      trialData.block.push(blockNumber);
 
     //   // I need to put the rest page before beginning of each task and NOT before the first one
     //   if (i == 0 && trialNumberIterate[i] != 0 && trialNumberIterate[i+1] != 1 && trialNumberIterate[i+2] != 2) {  
@@ -533,7 +535,8 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
             `;
           }
           trialData.totalReward.push(TotalRewardAmount);
-          trialData.choice.push(lastDecision);
+          
+
           return `
             <div class="trial-container">
               <div class="center" style="font-size: 55px; font-weight: bold; color: black;">Total: $ ${TotalRewardAmount.toFixed(2)}</div>
