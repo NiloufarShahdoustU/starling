@@ -18,6 +18,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput, blockNumb
     var lastRandomNumber1, lastRandomNumber2, lastDecision, lastTrialType, responseRT, trialStartTime;
 
     var TotalRewardAmount = rewardInput;
+    var RepeatedTrial = 1;
 
     // Deck initialization
     
@@ -42,7 +43,8 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput, blockNumb
       yourCard: [],
       interTrialInterval: [],
       choice: [],
-      block: []
+      block: [],
+      timeoutRepeat:[]
     };
     // Deck initialization
 
@@ -62,6 +64,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput, blockNumb
   // Iterate through each trial and add the blank page and fixation trial before the actual trial
     for (let i = 0; i < trialNumberIterate.length; i++) {
       trialData.block.push(blockNumber);
+      trialData.timeoutRepeat.push(RepeatedTrial);
       
       // Add a blank page with a random duration between 750 and 1000 ms
       var blankPage = {

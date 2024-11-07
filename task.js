@@ -22,6 +22,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
 
 
     var TotalRewardAmount = rewardInput; 
+    var RepeatedTrial = 0;
 
 
  
@@ -97,7 +98,8 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
       yourCard: [],
       interTrialInterval: [],
       choice: [],
-      block: []
+      block: [],
+      timeoutRepeat:[]
     };
 
 
@@ -112,6 +114,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
   // Iterate through each trial and add the blank page and fixation trial before the actual trial
     for (let i = 0; i < eachClassTrialNumber; i++) {
       trialData.block.push(blockNumber);
+      trialData.timeoutRepeat.push(RepeatedTrial);
 
     //   // I need to put the rest page before beginning of each task and NOT before the first one
     //   if (i == 0 && trialNumberIterate[i] != 0 && trialNumberIterate[i+1] != 1 && trialNumberIterate[i+2] != 2) {  

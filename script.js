@@ -19,7 +19,9 @@ let allTaskData = {
   trialIndex: [],
   trialType: [],
   choice: [],
-  block: []
+  block: [],
+  timeoutRepeat:[]
+
 };
 
 const jsPsych = initJsPsych({
@@ -91,7 +93,8 @@ async function handleMissedTrials(MissedTrials, rewardInput, blockNumber) {
     trialIndex: [],
     trialType: [],
     choice: [],
-    block: []
+    block: [],
+    timeoutRepeat:[]
   };
 
   while (MissedTrials.TrialNumber.length > 0) {
@@ -113,6 +116,7 @@ async function handleMissedTrials(MissedTrials, rewardInput, blockNumber) {
     mergedTaskData.trialType = mergedTaskData.trialType.concat(taskData.trialType);
     mergedTaskData.choice = mergedTaskData.choice.concat(taskData.choice);
     mergedTaskData.block = mergedTaskData.block.concat(taskData.block);
+    mergedTaskData.timeoutRepeat = mergedTaskData.timeoutRepeat.concat(taskData.timeoutRepeat);
   }
 
   return { rewardInput, taskData: mergedTaskData };
