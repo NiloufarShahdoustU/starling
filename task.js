@@ -18,7 +18,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
       return Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
     }
 
-    var lastRandomNumber1, lastRandomNumber2, lastDecision, lastTrialType;
+    var lastRandomNumber1, lastRandomNumber2, lastDecision, lastTrialType, responseRT, trialStartTime;
 
 
     var TotalRewardAmount = rewardInput; 
@@ -314,25 +314,27 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           </div>
         `;
       },
-      choices: 'NO_KEYS', // Initially, no keys are allowed
-      trial_duration: 3000,  //this is that 3000 wait time before the time is up message shows up
+      choices: "NO_KEYS", // We'll handle keyboard responses manually
+      response_ends_trial: false, // We control when the trial ends
+      trial_duration: null, // No automatic trial end
       on_load: function() {
+        trialStartTime = performance.now();
+
         var lastData = jsPsych.data.getLastTrialData().values()[0];
         var imgFolder = lastData.imgFolder;
-      
+    
         // Play the flip sound
-        var flipSound = new Audio('sound/flip.wav');  
+        var flipSound = new Audio('sound/flip.wav');
         flipSound.play();
-      
-        // Flip the card after the trial starts
+    
+        // Flip the card after 50ms
         var revealedCard = document.getElementById('revealed-card');
         setTimeout(function() {
-          // Show the front of the card after 50ms
           revealedCard.src = `img/${imgFolder}/${lastRandomNumber1}.jpg`;
           revealedCard.classList.add('flip-reveal');
-        }, 50); // Delay for card flip
-      
-        // Check for the existence of the message element and then display it
+        }, 50); // Adjust this delay as needed
+    
+        // Start accepting responses after the card is revealed
         setTimeout(function() {
           var messageElement = document.getElementById('message');
           if (messageElement) {
@@ -340,55 +342,85 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           } else {
             console.error("Message element not found in the DOM.");
           }
-      
-          // Now enable the arrow key responses if the message element exists
-          if (messageElement) {
-            jsPsych.pluginAPI.getKeyboardResponse({
-              callback_function: function(response_info) {
-                jsPsych.finishTrial({
-                  response: response_info.key,
-                  rt: response_info.rt
-                });
-              },
-              valid_responses: ['arrowup', 'arrowdown'],
-              rt_method: 'performance',
-              persist: false, // Only register the first response
-              allow_held_key: false
-            });
-          }
-      
-        }, 1000); // Delay to allow responses after this
+    
+          // Flag to check if response has been made
+          var responseMade = false;
+    
+          // Start listening for keyboard responses
+          var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
+            callback_function: function(response_info) {
+              if (!responseMade) {
+                responseMade = true;
+    
+                // Store response data
+                lastDecision = response_info.key;
+                responseRT = response_info.rt; // RT from when responses started being accepted
+    
+                lastTrialType = 'response';
+    
+                // End the trial
+                jsPsych.pluginAPI.clearAllTimeouts();
+                jsPsych.pluginAPI.cancelAllKeyboardResponses();
+                jsPsych.finishTrial();
+              }
+            },
+            valid_responses: ['arrowup', 'arrowdown'],
+            rt_method: 'performance',
+            persist: false,
+            allow_held_key: false
+          });
+    
+          // End the trial after 3000ms from when responses started being accepted
+          jsPsych.pluginAPI.setTimeout(function() {
+            if (!responseMade) {
+              responseMade = true;
+    
+              lastTrialType = 'timeout';
+    
+              // End the trial
+              jsPsych.pluginAPI.cancelAllKeyboardResponses();
+              jsPsych.finishTrial();
+            }
+          }, 3000); // Duration of response window
+        }, 500); // Delay before starting to accept responses (adjust as needed)
       },
-      
-      
-      on_finish: function(data) {
-        if (data.response === null) { 
-          lastTrialType = 'timeout'; 
-      
-          //saving missed trials
+  on_finish: function(data) {
+    var timeElapsed = performance.now() - trialStartTime; // Time since trial started
+    console.log('Time Elapsed:', timeElapsed);
+  
+    var minimumTrialTime = 500 + 3000; // Delay before responses + response window
+    var timeRemaining = minimumTrialTime - timeElapsed;
+    console.log('Time Remaining:', timeRemaining);
+    
+        if (lastTrialType === 'timeout') {
+          // Handle timeout logic
           MissedTrial.TrialNumber.push(trialNumberIterate[i]);
           MissedTrial.Number1.push(lastRandomNumber1);
           MissedTrial.Number2.push(lastRandomNumber2);
-      
-          // saving behavioral data, if it's timeout some columns are not applicable (na)
+    
+          // Saving behavioral data
           trialData.trialType.push('timeout');
           trialData.arrowRT.push('na');
           trialData.outcome.push('na');
           trialData.totalReward.push('na');
           trialData.choice.push('na');
-        } else {
-          // Store the decision response
-          lastDecision = data.response;
-          lastTrialType = 'response';
-          trialData.arrowRT.push(data.rt + 1000);  // RT for arrow key, adjusted for 1000ms delay
+        } else if (lastTrialType === 'response') {
+          // Store response data
+          trialData.arrowRT.push(responseRT); // RT from when responses started
           trialData.trialType.push('response');
+          trialData.choice.push(lastDecision);
         }
-      
-        // Disable keyboard input after this point
-        jsPsych.pluginAPI.cancelAllKeyboardResponses();
-      }      
-    };
+        data.timeRemaining = timeRemaining;
+
     
+        // Pass timeRemaining to the next trial
+        jsPsych.data.write({ timeRemaining: timeRemaining });
+        jsPsych.pluginAPI.cancelAllKeyboardResponses();
+
+
+      }
+    };
+ 
   
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
@@ -448,7 +480,18 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput) {
           }
         },
         choices: "NO_KEYS",
-        trial_duration: 2000
+
+        trial_duration: function() {
+          var lastData = jsPsych.data.getLastTrialData().values()[0];
+          var timeRemaining = lastData.timeRemaining !== undefined ? lastData.timeRemaining : 0;
+          // Ensure the duration is at least a minimum value (e.g., 2000 ms)
+          var duration = Math.max(2000, timeRemaining);
+          console.log('Time Remaining:', timeRemaining);
+          console.log('Trial Duration:', duration);
+          return duration;
+        }
+
+        
       };
       
       

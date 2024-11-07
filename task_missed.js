@@ -15,8 +15,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
     var timeline = [];
 
 
-    var lastRandomNumber1, lastRandomNumber2, lastDecision, lastTrialType;
-
+    var lastRandomNumber1, lastRandomNumber2, lastDecision, lastTrialType, responseRT, trialStartTime;
 
     var TotalRewardAmount = rewardInput;
 
@@ -211,9 +210,16 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           </div>
         `;
       },
-      choices: 'NO_KEYS', // Initially, no keys are allowed
-      trial_duration: 3000, 
+
+      choices: "NO_KEYS", // We'll handle keyboard responses manually
+
+      response_ends_trial: false, // We control when the trial ends
+
+      trial_duration: null, // No automatic trial end
+
       on_load: function() {
+
+        trialStartTime = performance.now();
         var lastData = jsPsych.data.getLastTrialData().values()[0];
         var imgFolder = lastData.imgFolder;
     
@@ -229,28 +235,123 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           revealedCard.classList.add('flip-reveal');
         }, 50); // 100ms delay for card flip
     
-        // Show the message after 1000ms and enable key responses
         setTimeout(function() {
-          document.getElementById('message').style.display = 'block';
+
+          var messageElement = document.getElementById('message');
+
+          if (messageElement) {
+
+            messageElement.style.display = 'block';
+
+          } else {
+
+            console.error("Message element not found in the DOM.");
+
+          }
+
     
-          // Now enable the arrow key responses
-          jsPsych.pluginAPI.getKeyboardResponse({
+
+          // Flag to check if response has been made
+
+          var responseMade = false;
+
+    
+
+          // Start listening for keyboard responses
+
+          var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
+
             callback_function: function(response_info) {
-              jsPsych.finishTrial({
-                response: response_info.key,
-                rt: response_info.rt
-              });
+
+              if (!responseMade) {
+
+                responseMade = true;
+
+    
+
+                // Store response data
+
+                lastDecision = response_info.key;
+
+                responseRT = response_info.rt; // RT from when responses started being accepted
+
+    
+
+                lastTrialType = 'response';
+
+    
+
+                // End the trial
+
+                jsPsych.pluginAPI.clearAllTimeouts();
+
+                jsPsych.pluginAPI.cancelAllKeyboardResponses();
+
+                jsPsych.finishTrial();
+
+              }
+
             },
+
             valid_responses: ['arrowup', 'arrowdown'],
+
             rt_method: 'performance',
-            persist: false, // Only register the first response
+
+            persist: false,
+
             allow_held_key: false
+
           });
-        }, 1000); // Delay for 1000ms to show message and allow responses
+
+    
+
+          // End the trial after 3000ms from when responses started being accepted
+
+          jsPsych.pluginAPI.setTimeout(function() {
+
+            if (!responseMade) {
+
+              responseMade = true;
+
+    
+
+              lastTrialType = 'timeout';
+
+    
+
+              // End the trial
+
+              jsPsych.pluginAPI.cancelAllKeyboardResponses();
+
+              jsPsych.finishTrial();
+
+            }
+
+          }, 3000); // Duration of response window
+
+        }, 500); // Delay before starting to accept responses (adjust as needed)
+
       },
-      on_finish: function(data) {
-        if (data.response === null) { 
-          lastTrialType = 'timeout'; 
+
+  on_finish: function(data) {
+
+    var timeElapsed = performance.now() - trialStartTime; // Time since trial started
+
+    console.log('Time Elapsed:', timeElapsed);
+
+  
+
+    var minimumTrialTime = 500 + 3000; // Delay before responses + response window
+
+    var timeRemaining = minimumTrialTime - timeElapsed;
+
+    console.log('Time Remaining:', timeRemaining);
+
+    
+
+        if (lastTrialType === 'timeout') {
+
+
     
           MissedTrialOutput.TrialNumber.push(trialNumberIterate[i]);
           MissedTrialOutput.Number1.push(lastRandomNumber1);
@@ -260,20 +361,37 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput) {
           trialData.outcome.push('na');
           trialData.totalReward.push('na');
           trialData.choice.push('na');
-        } else {
-          // Store the decision response
-          lastDecision = data.response;
-          lastTrialType = 'response';
-          trialData.arrowRT.push(data.rt + 1000);  // RT for arrow key, adjusted for 1000ms delay
+        } else if (lastTrialType === 'response') {
+
+          // Store response data
+
+          trialData.arrowRT.push(responseRT); // RT from when responses started
+
           trialData.trialType.push('response');
+
+          trialData.choice.push(lastDecision);
+
         }
-      
-        // Disable keyboard input after this point
+
+        data.timeRemaining = timeRemaining;
+
+
+
+    
+
+        // Pass timeRemaining to the next trial
+
+        jsPsych.data.write({ timeRemaining: timeRemaining });
+
         jsPsych.pluginAPI.cancelAllKeyboardResponses();
-      }  
+
+
+
+
+
+      }
+
     };
-
-
 
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
