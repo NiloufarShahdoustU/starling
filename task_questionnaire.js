@@ -68,7 +68,7 @@ export function taskQuestionnaire(jsPsych) {
       <div class="center">
         <div class="logo-title">
           <img src="img/logo.png" width="20%">
-          <h1>Questionnaire</h1>
+          <h1>Questionnaire 1</h1>
              <p>This questionnaire consists of 21 groups of statements. Please read each group of statements carefully, and then pick out the one statement in each group that best describes the way you have been feeling during the past two weeks, including today. Circle the number beside the statement you have picked. If several statements in the group seem to apply equally well, circle the highest number for that group. Be sure that you do not choose more than one statement for any group, including Item 16 (Changes in Sleeping Pattern) or Item 18 (Changes in Appetite).</p>
 
         </div>

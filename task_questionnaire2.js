@@ -74,7 +74,7 @@ export function taskQuestionnaire2(jsPsych) {
         <div class="center">
           <div class="logo-title">
             <img src="img/logo.png" width="20%">
-            <h1>Questionnaire</h1>
+            <h1>Questionnaire 2</h1>
             <p>Each item of this questionnaire is a statement that you may either agree or disagree with.
              For each item, please indicate how much you agree or disagree with what it says. 
              Be sure to respond to all items and avoid leaving any blank. Choose only one response for each statement. Please be as accurate and honest as possible. 

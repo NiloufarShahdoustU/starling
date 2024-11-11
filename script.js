@@ -262,15 +262,37 @@ async function MixMessage() {
 
 
 
-
 async function QuestionnairesMessage() {
   await jsPsych.run([{
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: '<div style="font-size: 30px;">Thank you very much! Please<br>press <b>C</b> to continue to the next questionnaire.</div>',
+    stimulus: `
+    <div style="font-size: 25px; width: 100%; text-align: center; line-height: 1.6; margin-top: 20px;">
+      Thank you very much for completing the first questionnaire.<br><br>
+      Please press <b>C</b> to continue to the next questionnaire.
+    </div>
+    `,
     choices: ['c'],
     trial_duration: null 
   }]);
 }
+
+
+async function TaskQuestionnairesMessage(wins, rows) {
+  await jsPsych.run([{
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+    <div style="font-size: 25px; width: 100%; text-align: center; line-height: 1.6; margin-top: 20px;">
+      Thank you very much for completing the task.<br><br>
+      Well done! You got <b style="color: green;">${wins}</b> out of <b>${rows}</b> trials <b style="color: green;">correct</b>!<br><br>
+      Please press <b>C</b> to continue to the first questionnaire.
+    </div>
+    `,
+    choices: ['c'],
+    trial_duration: null 
+  }]);
+}
+
+
 
 
 
@@ -390,6 +412,11 @@ async function runAllTasks() {
   downloadAllTaskData();
 
   // Now run the questionnaire
+  let rows = allTaskData.outcome.length;
+  let wins = allTaskData.outcome.reduce((sum, value) => sum + (value === 'win' ? 1 : 0), 0);
+
+
+  await TaskQuestionnairesMessage(wins, rows);
   await taskQuestionnaire(jsPsych);
   await QuestionnairesMessage();
   await taskQuestionnaire2(jsPsych);
