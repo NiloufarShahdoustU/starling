@@ -144,7 +144,7 @@ async function UniMessage() {
         <img src="img/uniform/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
         <div style="font-size: 20px;">
           <p>This is <b>block (1/4)</b>. It will take around 5 minutes to complete.</p>
-          <p>The black deck contains cards 1 to 9. All the cards have an equal chance of being selected. For example: if you draw a 2 it is likely that the agent's card is higher.</p>
+          <p>The black deck contains cards 1 to 9. All the cards have an equal chance of being drawn by your opponent. For example: if you draw a 2 it is likely that the agent's card is higher.</p>
           <br><br>Press <b>C</b> to continue.
         </div>
       </div>
@@ -167,7 +167,7 @@ async function LowFirstMessage() {
     <img src="img/low/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
    <div style="font-size: 20px;">
    <p>This is <b>block (2/4)</b>. It will take around 5 minutes to complete.</p>
-    <p>The orange deck contains cards 1 to 9. The lower valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is lower.</p>
+    <p>The orange deck contains cards 1 to 9. The lower valued cards have more chance of being drawn by your opponent. For example: if you draw a 5 it is likely that the agents card is lower.</p>
     <br><br>press <b>C</b> to continue.
             </div>
       </div>
@@ -186,7 +186,7 @@ async function LowSecondMessage() {
     <img src="img/low/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
    <div style="font-size: 20px;">
    <p>This is <b>block (3/4)</b>. It will take around 5 minutes to complete.</p>
-    <p>The orange deck contains cards 1 to 9. The lower valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is lower.</p>
+    <p>The orange deck contains cards 1 to 9. The lower valued cards have more chance of being drawn by your opponent. For example: if you draw a 5 it is likely that the agents card is lower.</p>
     <br><br>press <b>C</b> to continue.
             </div>
       </div>
@@ -205,7 +205,7 @@ async function HighFirstMessage() {
     <img src="img/high/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
     <div style="font-size: 20px;">
      <p>This is <b>block (2/4)</b>. It will take around 5 minutes to complete.</p>
-    <p>The green deck contains cards 1 to 9. The higher valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is higher.</p>
+    <p>The green deck contains cards 1 to 9. The higher valued cards have more chance of being drawn by your opponent. For example: if you draw a 5 it is likely that the agents card is higher.</p>
     <br><br>press <b>C</b> to continue.
             </div>
       </div>
@@ -224,7 +224,7 @@ async function HighSecondMessage() {
     <img src="img/high/back.jpg" class="large-image" style="width: 150px; margin-bottom: 20px;">
     <div style="font-size: 20px;">
      <p>This is <b>block (3/4)</b>. It will take around 5 minutes to complete.</p>
-    <p>The green deck contains cards 1 to 9. The higher valued cards have more chance of being selected. For example: if you draw a 5 it is likely that the agents card is higher.</p>
+    <p>The green deck contains cards 1 to 9. The higher valued cards have more chance of being drawn by your opponent. For example: if you draw a 5 it is likely that the agents card is higher.</p>
     <br><br>press <b>C</b> to continue.
             </div>
       </div>
