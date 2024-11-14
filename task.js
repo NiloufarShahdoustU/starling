@@ -69,13 +69,41 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
 
     var trialNumberIterate = trialNumberIterate_input;
     // console.log(trialNumberIterate);
-    // Define the fixation trial
+
+    // Define the fixation trial with two flashes of blackSquare
     var fixation = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: '<div style="font-size:60px;">+</div>',
       choices: "NO_KEYS",
-      trial_duration: 500
+      trial_duration: 500,
+      on_load: function() {
+        let blackSquare = document.getElementById('black-square');
+        
+        // Add black-square to DOM if not present
+        if (!blackSquare) {
+          blackSquare = document.createElement("div");
+          blackSquare.className = "black-square";
+          blackSquare.id = "black-square";
+          document.body.appendChild(blackSquare);
+        }
+    
+        // First flash for 100ms
+        blackSquare.style.display = 'block';
+        setTimeout(() => {
+          blackSquare.style.display = 'none';
+    
+          // Gap of 50ms before the second flash
+          setTimeout(() => {
+            blackSquare.style.display = 'block';
+            setTimeout(() => {
+              blackSquare.style.display = 'none';
+            }, 100); // Second flash for 100ms
+          }, 50); // Gap of 50ms
+        }, 100); // End of first flash
+      }
     };
+    
+
   
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
@@ -167,12 +195,23 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
             <div class="trial-container">
               <img src="img/${imgFolder}/back.jpg" class="large-image">
               <img src="img/${imgFolder}/back.jpg" class="small-image">
+              <div class="black-square" id="black-square"></div>
+
             </div>
           `;
           
         },
         choices: "NO_KEYS",
-        trial_duration: 1000
+        trial_duration: 1000,
+        on_load: function() {
+          let blackSquare = document.getElementById('black-square');
+          
+          // Display black square for a single 100 ms flash
+          blackSquare.style.display = 'block';
+          setTimeout(() => {
+            blackSquare.style.display = 'none';
+          }, 100); // Flash for 100 ms
+        }
       };
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
@@ -201,6 +240,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
               my card is higher <span style="color: green; font-size: 24px;">&#8593;</span> arrow<br>
               my card is lower <span style="color: red; font-size: 24px;">&#8595;</span> arrow
             </div>
+            <div class="black-square" id="black-square"></div>
           </div>
         `;
         
@@ -208,7 +248,23 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
         },
         choices: [' '], // The key name for space is ' '
         trial_duration: null, // This makes the trial wait indefinitely until 'space' is pressed
+        on_load: function() {
+          let blackSquare = document.getElementById('black-square');
+      
+          // Flash the black square for 100 ms
+          blackSquare.style.display = 'block';
+          setTimeout(() => {
+            blackSquare.style.display = 'none';
+          }, 100); // Flash for 100 ms
+        },
         on_finish: function (data) {
+          let blackSquare = document.getElementById('black-square');
+          // Flash the black square again for 100 ms when space is pressed
+          blackSquare.style.display = 'block';
+          setTimeout(() => {
+            blackSquare.style.display = 'none';
+          }, 100);
+
           trialData.spaceRT.push(data.rt+1000);  // RT when space is pressed (1000 is added to it because
                                                 // because the message is shown 1000ms after card onset)
           trialData.trialIndex.push(trialNumberIterate[i]);  // Store original trial number
@@ -327,6 +383,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
 
         var lastData = jsPsych.data.getLastTrialData().values()[0];
         var imgFolder = lastData.imgFolder;
+
     
         // Play the flip sound
         var flipSound = new Audio('sound/flip.wav');
@@ -468,6 +525,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
                 <div class="message" style="color: ${messageColor}; font-size: 60px; font-weight: bold; position: absolute; top: 100px;">${message}</div>
                 <img src="img/${imgFolder}/${lastRandomNumber1}.jpg" class="large-image" id="revealed-card">
                 <img src="img/${imgFolder}/${lastRandomNumber2}.jpg" class="small-image">
+                <div class="black-square" id="black-square"></div>
               </div>
             `;
           } else {
@@ -494,11 +552,19 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
           console.log('Time Remaining:', timeRemaining);
           console.log('Trial Duration:', duration);
           return duration;
-        }
-
-        
-      };
+        },
       
+        on_load: function() {
+          // Only flash the black square if it's a "win" or "lose" message (not a timeout)
+          if (lastTrialType === 'response') {
+            let blackSquare = document.getElementById('black-square');
+            blackSquare.style.display = 'block';
+            setTimeout(() => {
+              blackSquare.style.display = 'none';
+            }, 100); // Flash for 100 ms
+          }
+        }
+      };
       
   
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -543,16 +609,30 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
           return `
             <div class="trial-container">
               <div class="center" style="font-size: 55px; font-weight: bold; color: black;">Total: $ ${TotalRewardAmount.toFixed(2)}</div>
-                      <div class="center" style="font-size: 55px; font-weight: bold; color: ${rewardChangeColor}; margin-top: 30px;">$ ${rewardChangeText}</div>
-  
+              <div class="center" style="font-size: 55px; font-weight: bold; color: ${rewardChangeColor}; margin-top: 30px;">$ ${rewardChangeText}</div>
+              <div class="black-square" id="black-square"></div>
             </div>
           `;
   
           
         },
         choices: "NO_KEYS",
-        trial_duration: 1000
+        trial_duration: 1000,
+        on_load: function() {
+          // Flash black square only if there's a reward feedback (not on timeout)
+          if (lastTrialType === 'response') {
+            let blackSquare = document.getElementById('black-square');
+            blackSquare.style.display = 'block';
+            setTimeout(() => {
+              blackSquare.style.display = 'none';
+            }, 100); // Flash for 100 ms
+          }
+        }
       };
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
       timeline.push(blankPage);
       timeline.push(fixation);
       timeline.push(showImages);

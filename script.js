@@ -246,9 +246,9 @@ async function MixMessage() {
             <div style="font-size: 20px;">
                 <p>This is <b>block (4/4)</b>. It will take around 15 minutes to complete. You will now see cards from the black, orange, and green decks. Cards from these decks will now appear randomly.</p>
                 <p>Try to remember:</p>
-                <p>For the black deck: <b>All the cards have an equal chance</b> of being selected.</p>
-                <p>For the orange deck: The <b>lower valued cards have more chance</b> of being selected.</p>
-                <p>For the green deck: The <b>higher valued cards have more chance of</b> being selected.</p>
+                <p>For the black deck: <b>All the cards have an equal chance</b> of being  drawn by your opponent.</p>
+                <p>For the orange deck: The <b>lower valued cards have more chance</b> of being  drawn by your opponent.</p>
+                <p>For the green deck: The <b>higher valued cards have more chance of</b> being  drawn by your opponent.</p>
                 <br><br>Press <b>C</b> to continue.
             </div>
         </div>
@@ -383,6 +383,8 @@ async function runAllTasks() {
     mergeTaskDataIntoAll(taskData, allTaskData);
   }
 
+  downloadAllTaskData();
+  
   // Mixed rounds
   await RestMessage();
   await MixMessage();
