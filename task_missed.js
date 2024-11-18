@@ -341,7 +341,7 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput, blockNumb
 
                 // End the trial
 
-                jsPsych.pluginAPI.clearAllTimeouts();
+                // jsPsych.pluginAPI.clearAllTimeouts();
 
                 jsPsych.pluginAPI.cancelAllKeyboardResponses();
 
@@ -403,7 +403,12 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput, blockNumb
 
     var timeRemaining = minimumTrialTime - timeElapsed;
 
-    console.log('Time Remaining:', timeRemaining);
+    if (timeRemaining < 0) {
+      console.log(`Participant exceeded minimum trial time by ${-timeRemaining} ms`);
+    } else {
+      console.log(`Time Remaining: ${timeRemaining}`);
+    }
+    
 
     
 

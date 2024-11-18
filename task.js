@@ -1,4 +1,4 @@
-import { deck_number1_uni, deck_number2_uni, deck_number1_low, deck_number2_low, deck_number1_high, deck_number2_high, eachClassTrialNumber } from './global_variables.js';
+import { deck_number1_uni_play, deck_number2_uni_play, deck_number1_low_play, deck_number2_low_play, deck_number1_high_play, deck_number2_high_play, eachClassTrialNumber } from './global_variables.js';
 import{ RewardAmount} from './global_variables.js';
 
 export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNumber) {
@@ -14,9 +14,6 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
 
     var timeline = [];
 
-    function getRandomNumber(minVal, maxVal) {
-      return Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;
-    }
 
     var lastRandomNumber1, lastRandomNumber2, lastDecision, lastTrialType, responseRT, trialStartTime;
 
@@ -107,12 +104,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
   
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
-    var deck_number1_uni_selected = Array(deck_number1_uni.length).fill(0);
-    var deck_number2_uni_selected = Array(deck_number1_uni.length).fill(0);
-    var deck_number1_low_selected = Array(deck_number1_uni.length).fill(0);
-    var deck_number2_low_selected = Array(deck_number1_uni.length).fill(0);
-    var deck_number1_high_selected = Array(deck_number1_uni.length).fill(0);
-    var deck_number2_high_selected = Array(deck_number1_uni.length).fill(0); 
+
 
     var trialData = {
       trialIndex: [],
@@ -284,75 +276,24 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
         var imgFolder = "";
         var randomNumber1, randomNumber2;
     
-        //
-        const minNum = 0;  // minimum value 0
-        const maxNum = 44; // maximum value 44 (the number of elements in each distribution is 45 and we want to get an index of those numbers)
+      
         
         if (0 * eachClassTrialNumber <= trialClass && trialClass < 1 * eachClassTrialNumber) {
           imgFolder = "uniform";
-          var temp_rand1_index;
-          do {
-            temp_rand1_index = getRandomNumber(minNum, maxNum);
-          } while (deck_number1_uni_selected[temp_rand1_index] === 1);
-          randomNumber1 = deck_number1_uni[temp_rand1_index]; // large card
-          deck_number1_uni_selected[temp_rand1_index] = 1; // chosen flag =1;
           
-          var temp_rand2_index;
-          do {
-            do {
-              temp_rand2_index = getRandomNumber(minNum, maxNum);
-            } while (deck_number2_uni_selected[temp_rand2_index] === 1); // Check if the index is already selected
-            
-            randomNumber2 = deck_number2_uni[temp_rand2_index]; // small card
-            
-            if (randomNumber1 !== randomNumber2) {
-              deck_number2_uni_selected[temp_rand2_index] = 1; // mark the element as selected
-            }
-          } while (randomNumber2 === randomNumber1); // ensure they are different
+          randomNumber1 = deck_number1_uni_play[i];
+          randomNumber2 = deck_number2_uni_play[i];
           
         } else if (1 * eachClassTrialNumber <= trialClass && trialClass < 2 * eachClassTrialNumber) {
           imgFolder = "low";
-          var temp_rand1_index;
-          do {
-            temp_rand1_index = getRandomNumber(minNum, maxNum);
-          } while (deck_number1_low_selected[temp_rand1_index] === 1);
-          randomNumber1 = deck_number1_low[temp_rand1_index]; // large card
-          deck_number1_low_selected[temp_rand1_index] = 1; // chosen flag =1;
-          
-          var temp_rand2_index;
-          do {
-            do {
-              temp_rand2_index = getRandomNumber(minNum, maxNum);
-            } while (deck_number2_low_selected[temp_rand2_index] === 1); // Check if the index is already selected
-            
-            randomNumber2 = deck_number2_low[temp_rand2_index]; // small card
-            
-            if (randomNumber1 !== randomNumber2) {
-              deck_number2_low_selected[temp_rand2_index] = 1; // mark the element as selected
-            }
-          } while (randomNumber2 === randomNumber1); // ensure they are different
+          randomNumber1 = deck_number1_low_play[i];
+          randomNumber2 = deck_number2_low_play[i];
     
         } else if (2 * eachClassTrialNumber <= trialClass && trialClass < 3 * eachClassTrialNumber) {
           imgFolder = "high";
-          var temp_rand1_index;
-          do {
-            temp_rand1_index = getRandomNumber(minNum, maxNum);
-          } while (deck_number1_high_selected[temp_rand1_index] === 1);
-          randomNumber1 = deck_number1_high[temp_rand1_index]; // large card
-          deck_number1_high_selected[temp_rand1_index] = 1; // chosen flag =1;
-          
-          var temp_rand2_index;
-          do {
-            do {
-              temp_rand2_index = getRandomNumber(minNum, maxNum);
-            } while (deck_number2_high_selected[temp_rand2_index] === 1); // Check if the index is already selected
-            
-            randomNumber2 = deck_number2_high[temp_rand2_index]; // small card
-            
-            if (randomNumber1 !== randomNumber2) {
-              deck_number2_high_selected[temp_rand2_index] = 1; // mark the element as selected
-            }
-          } while (randomNumber2 === randomNumber1); // ensure they are different
+          randomNumber1 = deck_number1_high_play[i];
+          randomNumber2 = deck_number2_high_play[i];
+
         }
     
         lastRandomNumber1 = randomNumber1;
@@ -421,7 +362,7 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
                 lastTrialType = 'response';
     
                 // End the trial
-                jsPsych.pluginAPI.clearAllTimeouts();
+                // jsPsych.pluginAPI.clearAllTimeouts();
                 jsPsych.pluginAPI.cancelAllKeyboardResponses();
                 jsPsych.finishTrial();
               }
@@ -452,7 +393,12 @@ export function runTask(jsPsych, trialNumberIterate_input, rewardInput, blockNum
   
     var minimumTrialTime = 500 + 3000; // Delay before responses + response window
     var timeRemaining = minimumTrialTime - timeElapsed;
-    console.log('Time Remaining:', timeRemaining);
+    if (timeRemaining < 0) {
+      console.log(`Participant exceeded minimum trial time by ${-timeRemaining} ms`);
+    } else {
+      console.log(`Time Remaining: ${timeRemaining}`);
+    }
+    
     
         if (lastTrialType === 'timeout') {
           // Handle timeout logic
