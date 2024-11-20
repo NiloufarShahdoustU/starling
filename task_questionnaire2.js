@@ -51,17 +51,18 @@ export function taskQuestionnaire2(jsPsych) {
 
         // Show thank you message and then resolve
         document.body.innerHTML = `
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-          <h1 style="font-size: 24px; text-align: center;">Thank you for your participation!</h1>
-        </div>
-      `;
+          <div style="display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; font-size: 24px; padding: 0 10%; box-sizing: border-box;">
+            <p>Thank you for contributing to this meaningful scientific endeavor. Please note that <b>the monetary rewards in this task are not real</b>. We sincerely appreciate your support and effort.</p>
+          </div>
+        `;
+
       
         
         // After showing the thank you message for a while, resolve the promise
         setTimeout(() => {
           window.location = "http://localhost:8080/";
           resolve(); 
-        }, 3000); // 3-second delay before redirecting
+        }, 10000); // 10-second delay before redirecting
       } 
     }); 
 
