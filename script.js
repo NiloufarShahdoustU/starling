@@ -322,53 +322,63 @@ async function runAllTasks() {
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward, 1);
     mergeTaskDataIntoAll(taskData, allTaskData);
+    downloadAllTaskData();
 
     result = await handleMissedTrials(MissedTrials, WholeReward,1);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
+    downloadAllTaskData();
 
     await RestMessage();
     await LowFirstMessage();
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward,2);
     mergeTaskDataIntoAll(taskData, allTaskData);
+    downloadAllTaskData();
 
     result = await handleMissedTrials(MissedTrials, WholeReward,2);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
+    downloadAllTaskData();
 
     await RestMessage();
     await HighSecondMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward,3);
     mergeTaskDataIntoAll(taskData, allTaskData);
+    downloadAllTaskData();
 
     result = await handleMissedTrials(MissedTrials, WholeReward,3);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
+    downloadAllTaskData();
 
   } else { // If order number is 2, the flow is: uni, high, low, then mixture of all these
     await UniMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_uni, WholeReward,1);
     mergeTaskDataIntoAll(taskData, allTaskData);
+    downloadAllTaskData();
 
     result = await handleMissedTrials(MissedTrials, WholeReward,1);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
+    downloadAllTaskData();
 
     await RestMessage();
     await HighFirstMessage();
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_high_first, WholeReward,2);
     mergeTaskDataIntoAll(taskData, allTaskData);
+    downloadAllTaskData();
     result = await handleMissedTrials(MissedTrials, WholeReward,2);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
+    downloadAllTaskData();
 
 
 
@@ -377,13 +387,14 @@ async function runAllTasks() {
 
     [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_fixed_low_first, WholeReward,3);
     mergeTaskDataIntoAll(taskData, allTaskData);
+    downloadAllTaskData();
     result = await handleMissedTrials(MissedTrials, WholeReward,3);
     WholeReward = result.rewardInput;
     taskData = result.taskData;
     mergeTaskDataIntoAll(taskData, allTaskData);
+    downloadAllTaskData();
   }
 
-  downloadAllTaskData();
   
   // Mixed rounds
   await RestMessage();
@@ -391,26 +402,30 @@ async function runAllTasks() {
 
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(0 * eachClassTrialNumber, 1 * eachClassTrialNumber), WholeReward,4);
   mergeTaskDataIntoAll(taskData, allTaskData);
+  downloadAllTaskData();
   result = await handleMissedTrials(MissedTrials, WholeReward,4);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
   mergeTaskDataIntoAll(taskData, allTaskData);
+  downloadAllTaskData();
 
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(1 * eachClassTrialNumber, 2 * eachClassTrialNumber), WholeReward,4);
   mergeTaskDataIntoAll(taskData, allTaskData);
+  downloadAllTaskData();
   result = await handleMissedTrials(MissedTrials, WholeReward,4);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
   mergeTaskDataIntoAll(taskData, allTaskData);
+  downloadAllTaskData();
 
   [MissedTrials, WholeReward, taskData] = await runTask(jsPsych, trialNumber_mixed.slice(2 * eachClassTrialNumber, 3 * eachClassTrialNumber), WholeReward,4);
   mergeTaskDataIntoAll(taskData, allTaskData);
+  downloadAllTaskData();
+
   result = await handleMissedTrials(MissedTrials, WholeReward,4);
   WholeReward = result.rewardInput;
   taskData = result.taskData;
   mergeTaskDataIntoAll(taskData, allTaskData);
-
-  // Download data before questionnaire
   downloadAllTaskData();
 
   // Now run the questionnaire

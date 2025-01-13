@@ -614,7 +614,13 @@ export function runTaskMissed(jsPsych, MissedTrialsInput, rewardInput, blockNumb
 
     } // trial for loop
   
-  
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        jsPsych.endExperiment();
+        console.log('Trial ended by the user, data saved')
+        resolve([MissedTrialOutput, TotalRewardAmount, trialData]) // these are output
+      }
+    });
   
   jsPsych.run(timeline);
   })
