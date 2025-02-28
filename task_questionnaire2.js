@@ -18,10 +18,10 @@ export function taskQuestionnaire2(jsPsych) {
 
         // Map numeric responses to actual labels
         var responseLabels = [
-          "Very True", 
-          "Somewhat True", 
-          "Somewhat False", 
-          "Very False"
+          "1", 
+          "2", 
+          "3", 
+          "4"
         ];
 
         

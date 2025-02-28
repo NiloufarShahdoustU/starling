@@ -39,7 +39,7 @@ export function taskQuestionnaire(jsPsych) {
         var encodedUri = encodeURI(csvContent);
         var link = document.createElement('a');
         link.href = encodedUri;
-        link.download = `questionnaire_responses_${dateTime}.csv`;
+        link.download = `questionnaire_responses_BDI${dateTime}.csv`;
         document.body.appendChild(link); // Required for Firefox
         link.click();
         document.body.removeChild(link);
