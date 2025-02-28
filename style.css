@@ -99,12 +99,17 @@ p {
 
 
 .black-square {
-  width: 70px;
-  height: 70px;
+  width: 100px;
+  height: 100px;
   background-color: black;
   position: fixed;
-  bottom: 10px;
-  left: 10px;
+  bottom: 0px;
+  left: 0px;
   display: none; /* Initially hidden */
   z-index: 1000; /* Ensure it appears above other elements */
+}
+
+body {
+  margin: 0;
+  padding: 0;
 }
