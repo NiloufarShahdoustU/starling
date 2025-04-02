@@ -83,40 +83,61 @@ export function taskDescription() {
 
 
     /// Demographic Form with multiple questions
-var demographic_form = {
-  type: jsPsychSurveyMultiChoice,
-  questions: [
-    {
-      prompt: "What is your gender?",
-      name: 'gender',
-      options: ['Male', 'Female', 'Non-binary', 'Prefer not to say'],
-      required: true
-    },
-    {
-      prompt: "What is your age range?",
-      name: 'age',
-      options: ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'],
-      required: true
-    },
-    {
-      prompt: "What is your ethnicity?",
-      name: 'ethnicity',
-      options: ['Hispanic or Latino', 'Not Hispanic or Latino', 'Prefer not to say'],
-      required: true
-    },
-    {
-      prompt: "What is your race?",
-      name: 'race',
-      options: ['American Indian or Alaska Native', 'Asian', 'Black or African American', 'Native Hawaiian or Other Pacific Islander', 'White', 'Prefer not to say'],
-      required: true
-    }
-  ],
-  preamble: `
-<p><img src="img/logo.png" width="20%"></p>
-  <p><b>Demographic form.</b></p>
-`,
-  data: { task: 'demographic' } // Add a data tag to identify this form
-};
+    var demographic_form = {
+      type: jsPsychSurveyHtmlForm,
+      preamble: `
+        <p><img src="img/logo.png" width="20%"></p>
+        <p><b>Demographic form.</b></p>
+      `,
+      html: `
+        <div style="text-align: left; max-width: 600px; margin: auto;">
+          <label for="gender">What is your gender?</label><br>
+          <select name="gender" required>
+            <option value="" disabled selected>Select...</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Non-binary">Non-binary</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select><br><br>
+    
+          <label for="age">What is your age range?</label><br>
+          <select name="age" required>
+            <option value="" disabled selected>Select...</option>
+            <option value="18-24">18-24</option>
+            <option value="25-34">25-34</option>
+            <option value="35-44">35-44</option>
+            <option value="45-54">45-54</option>
+            <option value="55-64">55-64</option>
+            <option value="65+">65+</option>
+          </select><br><br>
+    
+          <label for="ethnicity">What is your ethnicity?</label><br>
+          <select name="ethnicity" required>
+            <option value="" disabled selected>Select...</option>
+            <option value="Hispanic or Latino">Hispanic or Latino</option>
+            <option value="Not Hispanic or Latino">Not Hispanic or Latino</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select><br><br>
+    
+          <label for="race">What is your race?</label><br>
+          <select name="race" required>
+            <option value="" disabled selected>Select...</option>
+            <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
+            <option value="Asian">Asian</option>
+            <option value="Black or African American">Black or African American</option>
+            <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or Other Pacific Islander</option>
+            <option value="White">White</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select><br><br>
+    
+          <label for="education">How many years of education have you completed?</label><br>
+          <input type="number" name="education" min="0" max="100" required><br><br>
+        </div>
+      `,
+      data: { task: 'demographic' }
+    };
+    
+    
 
 timeline.push(demographic_form);
 
@@ -152,11 +173,12 @@ function downloadDemographicData() {
   // Filter the demographic form responses only using the 'task' data tag
   var demographic_data = jsPsych.data.get().filter({task: 'demographic'}).values();
 
-  // Convert to CSV format
-  var csv = 'Gender, Age, Ethnicity, Race\n';
-  demographic_data.forEach(function(row) {
-    csv += `${row.response.gender}, ${row.response.age}, ${row.response.ethnicity}, ${row.response.race}\n`;
-  });
+// Convert to CSV format
+var csv = 'Gender, Age, Ethnicity, Race, Education\n';
+demographic_data.forEach(function(row) {
+  csv += `${row.response.gender}, ${row.response.age}, ${row.response.ethnicity}, ${row.response.race}, ${row.response.education}\n`;
+});
+
 
   // Get current date and time for file naming
   var date = new Date();
